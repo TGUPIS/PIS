@@ -52,12 +52,13 @@ namespace PIS
             // 
             // enterButton
             // 
+            this.enterButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
             this.enterButton.Location = new System.Drawing.Point(138, 179);
             this.enterButton.Name = "enterButton";
             this.enterButton.Size = new System.Drawing.Size(112, 34);
             this.enterButton.TabIndex = 2;
             this.enterButton.Text = "Войти";
-            this.enterButton.UseVisualStyleBackColor = true;
+            this.enterButton.UseVisualStyleBackColor = false;
             this.enterButton.Click += new System.EventHandler(this.enterButton_Click);
             // 
             // label1
@@ -82,6 +83,7 @@ namespace PIS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.enterButton);

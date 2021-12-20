@@ -6,37 +6,32 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using ClientApi;
 
 namespace PIS
 {
     public partial class Card : UserControl
     {
+        public Instance Instance { get; set; }
+
+        CardContent cardContent;
+        public CardContent CardContent
+        {
+            get
+            {
+                return cardContent;
+            }
+            set
+            {
+                if (value == null)
+                    return;
+
+                cardContent = value;
+                cardIdValue.Text = value.CardId.ToString();
+            }
+        }
+
         public Action Return;
-
-        public string Status
-        {
-            get
-            {
-                return statusBox.Text;
-            }
-            set
-            {
-                statusBox.Text = value;
-            }
-        }
-
-        public string Area
-        {
-            get
-            {
-                return areaReadBox.Text;
-            }
-            set
-            {
-                areaReadBox.Text = value;
-            }
-        }
-
 
         public Card()
         {
@@ -100,6 +95,44 @@ namespace PIS
                     myStream.Close();
                 }
             }
+        }
+
+        private void nextStepButton_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Card_Load(object sender, EventArgs e)
+        {
+            // TODO: REMOVE THIS STATUSBOX TEST
+            {
+                var editableCard = Instance.EditCard(CardContent);
+
+                statusBox1.CurrentStatus = editableCard.CurrentCardStage;
+                statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
+                statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
+                statusBox1.LeftButtonClick = () =>
+                {
+                    if (!editableCard.IsCardSentToPreviousStage)
+                        return;
+
+                    editableCard.SendCardToPreviousStage();
+                    statusBox1.CurrentStatus = editableCard.CurrentCardStage;
+                    statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
+                    statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
+                };
+                statusBox1.RightButtonClick = () =>
+                {
+                    if (!editableCard.IsCardSentToNextStage)
+                        return;
+
+                    editableCard.SendCardToNextStage();
+                    statusBox1.CurrentStatus = editableCard.CurrentCardStage;
+                    statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
+                    statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
+                };
+
+                statusBox1.Editable = true;
+            }            
         }
     }
 }

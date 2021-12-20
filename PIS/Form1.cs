@@ -8,42 +8,97 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using ClientApi;
 
 namespace PIS
 {
     public partial class Form1 : Form
     {
+        Instance instance;
+
         public Form1()
         {
             InitializeComponent();
         }
 
+
+        public void UpdateRegistry(Filter? filter, Sorting? sorting)
+        {
+            var currentFilter = filter == null ? new FilterBuilder().Build() : filter;
+            var currentSorting = sorting == null ? new SortingBuilder().Build() : sorting;
+
+
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            filterPanel1.form1 = this;
+
+            instance = new ClientApi.Instance();
+
+            /*
+            var filter = new ClientApi.FilterBuilder().Build();
+            var sorting = new ClientApi.SortingBuilder().Build();
+            var registry = instance.GetRegistry(filter, sorting);
+
+            foreach(var cardCover in registry.First())
+            {
+
+            }
+            */
+
+            card.Instance = instance;
+
             autorisation.Login = () =>
             {
                 autorisation.Visible = false;
                 menuPanel.Visible = true;
                 cardPanel.Visible = true;
+                filterPanel1.Visible = true;
             };
 
             card.Return = () =>
             {
                 card.Visible = false;
+                filterPanel1.Visible = true;
                 menuPanel.Visible = true;
             };
 
+
+
             var с1 = new CardPreview()
             {
-                Status = "123"
+                CardCover = new CardCover(instance, 123, Status.AgreedByCatchingOrganization, new DateTime(2021, 8, 5),
+                "Тюмень", new DateTime(2021, 9, 4), true, true)
             };
             с1.Click += cardPreview_Click;
             cardPanel.Controls.Add(с1);
 
 
-            var с2 = new CardPreview();
+            var с2 = new CardPreview()
+            {
+                CardCover = new CardCover(instance, 234, Status.AgreedByOmsu, new DateTime(2021, 9, 15),
+                "Тюмень", new DateTime(2021, 10, 6), false, true)
+            };
             с2.Click += cardPreview_Click;
             cardPanel.Controls.Add(с2);
+
+            var с3 = new CardPreview()
+            {
+                CardCover = new CardCover(instance, 345, Status.SubmittedForRevision, new DateTime(2021, 10, 24),
+                "Тюмень", new DateTime(2021, 11, 8), true, false)
+            };
+            с3.Click += cardPreview_Click;
+            cardPanel.Controls.Add(с3);
+
+            var с4 = new CardPreview()
+            {
+                CardCover = new CardCover(instance, 456, Status.ApprovedByOmsu, new DateTime(2021, 11, 30),
+                "Тюмень", new DateTime(2021, 12, 10), false, false)
+            };
+            с4.Click += cardPreview_Click;
+            cardPanel.Controls.Add(с4);
+
 
 
         }
@@ -52,10 +107,9 @@ namespace PIS
         private void cardPreview_Click(object sender, EventArgs e)
         {
             var cardPreview = (CardPreview)sender;
-            card.Status = cardPreview.Status;
-            card.Area = cardPreview.Area;
-            /* ... */
+            card.CardContent = instance.OpenCard(cardPreview.CardCover);
 
+            filterPanel1.Visible = false;
             menuPanel.Visible = false;
             card.Visible = true;
         }
@@ -65,13 +119,9 @@ namespace PIS
             profilePanel.Visible = !profilePanel.Visible;
         }
 
-        private void filterButton_Click(object sender, EventArgs e)
-        {
-            filterPanel.Visible = !filterPanel.Visible;
-        }
-
         private void logoutButton_Click(object sender, EventArgs e)
         {
+            filterPanel1.Visible = false;
             menuPanel.Visible = false;
             cardPanel.Visible = false;
             profilePanel.Visible = false;
@@ -80,20 +130,22 @@ namespace PIS
 
         private void exportButton_Click(object sender, EventArgs e)
         {
-            Stream myStream;
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
-            saveFileDialog1.Filter = "Word файлы (*.docx)|*.docx|Все файлы (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 1;
-            saveFileDialog1.RestoreDirectory = true;
+        }
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+        public static string ConvertStatusToString(Status status)
+        {
+            return status switch
             {
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
-                {
-                    myStream.Close();
-                }
-            }
+                Status.SubmittedForRevision => "Отправлено на доработку",
+                Status.Draft => "Черновик",
+                Status.AgreementByCatchingOrganization => "Согласование в организации по отлову",
+                Status.AgreedByCatchingOrganization => "Согласовано в организации по отлову",
+                Status.ApprovedByCatchingOrganization => "Утверждено в организации по отлову",
+                Status.AgreedByOmsu => "Согласовано в ОМСУ",
+                Status.ApprovedByOmsu => "Утверждено в ОМСУ",
+                _ => throw new Exception()
+            };
         }
     }
 }

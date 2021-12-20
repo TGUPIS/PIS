@@ -5,66 +5,41 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using ClientApi;
 
 namespace PIS
 {
     public partial class CardPreview : UserControl
     {
-        public bool Selected
-        {
+        CardCover cardCover;
+        public CardCover CardCover {
             get
             {
-                return BackColor != SystemColors.Control;
-            }
-            private set
-            {
-                BackColor = value ? SystemColors.GradientActiveCaption : SystemColors.Control;
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                return statusBox.Text;
+                return cardCover;
             }
             set
             {
-                statusBox.Text = value;
+                cardCover = value;
+                idLabel.Text = "#" + value.CardId.ToString();
+                statusBox.Text = Form1.ConvertStatusToString(value.Status);
+                areaBox.Text = value.CatchLocality;
+
+                isCommentedBox.Visible = value.IsCommented;
+                isPdfAttachedBox.Visible = value.IsPdfAttached;
+                if(value.IsPdfAttached && !value.IsCommented)
+                {
+                    isPdfAttachedBox.Location = isCommentedBox.Location;
+                }
+
+                statusChangeDateBox.Text = value.StatusChangeDate.ToString("dd.MM.yyyy");
+                catchDateBox.Text = value.CatchDate.ToString("MM.yyyy");
             }
         }
-
-        public string Area
-        {
-            get
-            {
-                return areaBox.Text;
-            }
-            set
-            {
-                areaBox.Text = value;
-            }
-        }
-
 
         public CardPreview()
         {
             InitializeComponent();
         }
-
-
-        protected override void OnClick(EventArgs e)
-        {
-            if (Form.ModifierKeys == Keys.Control)
-            {
-                Selected = !Selected;
-            }
-            else
-            {
-                base.OnClick(e);
-            }
-        }
-
 
         private void CardPreview_Click(object sender, EventArgs e)
         {

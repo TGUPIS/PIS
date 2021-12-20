@@ -33,7 +33,6 @@ namespace PIS
             this.card = new PIS.Card();
             this.autorisation = new PIS.Autorisation();
             this.menuPanel = new System.Windows.Forms.Panel();
-            this.filterButton = new System.Windows.Forms.PictureBox();
             this.profileButton = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
@@ -46,67 +45,71 @@ namespace PIS
             this.loginBox = new System.Windows.Forms.TextBox();
             this.RoleLabel = new System.Windows.Forms.Label();
             this.loginLabel = new System.Windows.Forms.Label();
-            this.filterPanel = new System.Windows.Forms.Panel();
+            this.filterPanel1 = new PIS.FilterPanel();
             this.menuPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.filterButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.profileButton)).BeginInit();
             this.profilePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // cardPanel
             // 
-            this.cardPanel.Location = new System.Drawing.Point(3, 62);
+            this.cardPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
+            this.cardPanel.Location = new System.Drawing.Point(6, 62);
             this.cardPanel.Name = "cardPanel";
-            this.cardPanel.Size = new System.Drawing.Size(695, 393);
+            this.cardPanel.Size = new System.Drawing.Size(613, 795);
             this.cardPanel.TabIndex = 0;
             this.cardPanel.Visible = false;
             // 
             // card
             // 
-            this.card.Area = "Тюмень";
+            this.card.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.card.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
+            this.card.CardContent = null;
+            this.card.Instance = null;
             this.card.Location = new System.Drawing.Point(2, 1);
+            this.card.Margin = new System.Windows.Forms.Padding(4);
             this.card.Name = "card";
-            this.card.Size = new System.Drawing.Size(696, 474);
-            this.card.Status = "Согласован в организации по отлову";
+            this.card.Size = new System.Drawing.Size(1045, 877);
             this.card.TabIndex = 1;
             this.card.Visible = false;
             // 
             // autorisation
             // 
-            this.autorisation.Location = new System.Drawing.Point(151, 113);
+            this.autorisation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.autorisation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
+            this.autorisation.Location = new System.Drawing.Point(329, 177);
+            this.autorisation.Margin = new System.Windows.Forms.Padding(4);
             this.autorisation.Name = "autorisation";
-            this.autorisation.Size = new System.Drawing.Size(388, 248);
+            this.autorisation.Size = new System.Drawing.Size(391, 248);
             this.autorisation.TabIndex = 0;
             // 
             // menuPanel
             // 
-            this.menuPanel.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.menuPanel.Controls.Add(this.filterButton);
+            this.menuPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(230)))));
+            this.menuPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.menuPanel.Controls.Add(this.profileButton);
             this.menuPanel.Controls.Add(this.button1);
             this.menuPanel.Controls.Add(this.exportButton);
             this.menuPanel.Controls.Add(this.addButton);
             this.menuPanel.Location = new System.Drawing.Point(10, 8);
             this.menuPanel.Name = "menuPanel";
-            this.menuPanel.Size = new System.Drawing.Size(674, 47);
+            this.menuPanel.Size = new System.Drawing.Size(1021, 47);
             this.menuPanel.TabIndex = 2;
             this.menuPanel.Visible = false;
             // 
-            // filterButton
-            // 
-            this.filterButton.Image = global::PIS.Properties.Resources.filter;
-            this.filterButton.Location = new System.Drawing.Point(588, 4);
-            this.filterButton.Name = "filterButton";
-            this.filterButton.Size = new System.Drawing.Size(40, 40);
-            this.filterButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.filterButton.TabIndex = 4;
-            this.filterButton.TabStop = false;
-            this.filterButton.Click += new System.EventHandler(this.filterButton_Click);
-            // 
             // profileButton
             // 
+            this.profileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.profileButton.Image = global::PIS.Properties.Resources.profile;
-            this.profileButton.Location = new System.Drawing.Point(631, 3);
+            this.profileButton.Location = new System.Drawing.Point(979, 3);
             this.profileButton.Name = "profileButton";
             this.profileButton.Size = new System.Drawing.Size(40, 40);
             this.profileButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -116,35 +119,40 @@ namespace PIS
             // 
             // button1
             // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
             this.button1.Location = new System.Drawing.Point(243, 6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 34);
             this.button1.TabIndex = 2;
             this.button1.Text = "Удалить";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             // 
             // exportButton
             // 
+            this.exportButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
             this.exportButton.Location = new System.Drawing.Point(125, 6);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(112, 34);
             this.exportButton.TabIndex = 1;
             this.exportButton.Text = "Экспорт";
-            this.exportButton.UseVisualStyleBackColor = true;
+            this.exportButton.UseVisualStyleBackColor = false;
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
             // 
             // addButton
             // 
+            this.addButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
             this.addButton.Location = new System.Drawing.Point(7, 6);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(112, 34);
             this.addButton.TabIndex = 0;
             this.addButton.Text = "Добавить";
-            this.addButton.UseVisualStyleBackColor = true;
+            this.addButton.UseVisualStyleBackColor = false;
             // 
             // profilePanel
             // 
-            this.profilePanel.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.profilePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.profilePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(230)))));
+            this.profilePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.profilePanel.Controls.Add(this.fioBox);
             this.profilePanel.Controls.Add(this.fioLabel);
             this.profilePanel.Controls.Add(this.logoutButton);
@@ -152,7 +160,7 @@ namespace PIS
             this.profilePanel.Controls.Add(this.loginBox);
             this.profilePanel.Controls.Add(this.RoleLabel);
             this.profilePanel.Controls.Add(this.loginLabel);
-            this.profilePanel.Location = new System.Drawing.Point(311, 54);
+            this.profilePanel.Location = new System.Drawing.Point(658, 54);
             this.profilePanel.Name = "profilePanel";
             this.profilePanel.Size = new System.Drawing.Size(373, 287);
             this.profilePanel.TabIndex = 3;
@@ -222,32 +230,35 @@ namespace PIS
             this.loginLabel.TabIndex = 0;
             this.loginLabel.Text = "Логин";
             // 
-            // filterPanel
+            // filterPanel1
             // 
-            this.filterPanel.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.filterPanel.Location = new System.Drawing.Point(137, 54);
-            this.filterPanel.Name = "filterPanel";
-            this.filterPanel.Size = new System.Drawing.Size(547, 322);
-            this.filterPanel.TabIndex = 4;
-            this.filterPanel.Visible = false;
+            this.filterPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.filterPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(230)))));
+            this.filterPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.filterPanel1.Location = new System.Drawing.Point(619, 65);
+            this.filterPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.filterPanel1.Name = "filterPanel1";
+            this.filterPanel1.Size = new System.Drawing.Size(412, 800);
+            this.filterPanel1.TabIndex = 5;
+            this.filterPanel1.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(692, 571);
-            this.Controls.Add(this.filterPanel);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
+            this.ClientSize = new System.Drawing.Size(1041, 877);
             this.Controls.Add(this.profilePanel);
             this.Controls.Add(this.menuPanel);
             this.Controls.Add(this.autorisation);
             this.Controls.Add(this.card);
             this.Controls.Add(this.cardPanel);
+            this.Controls.Add(this.filterPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.filterButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.profileButton)).EndInit();
             this.profilePanel.ResumeLayout(false);
             this.profilePanel.PerformLayout();
@@ -265,7 +276,6 @@ namespace PIS
         private System.Windows.Forms.Button exportButton;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.PictureBox profileButton;
-        private System.Windows.Forms.PictureBox filterButton;
         private System.Windows.Forms.Panel profilePanel;
         private System.Windows.Forms.Button logoutButton;
         private System.Windows.Forms.TextBox textBox1;
@@ -274,7 +284,7 @@ namespace PIS
         private System.Windows.Forms.Label loginLabel;
         private System.Windows.Forms.TextBox fioBox;
         private System.Windows.Forms.Label fioLabel;
-        private System.Windows.Forms.Panel filterPanel;
+        private FilterPanel filterPanel1;
     }
 }
 

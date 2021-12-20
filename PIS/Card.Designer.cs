@@ -54,6 +54,7 @@ namespace PIS
             this.pdfOpenButton = new System.Windows.Forms.Button();
             this.areaEditBox = new System.Windows.Forms.ComboBox();
             this.areaReadBox = new System.Windows.Forms.TextBox();
+            this.statusBox1 = new PIS.StatusBox();
             ((System.ComponentModel.ISupportInitialize)(this.editButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.readButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.saveButton)).BeginInit();
@@ -125,6 +126,7 @@ namespace PIS
             this.nextStepButton.TabIndex = 8;
             this.nextStepButton.Text = "Отправить на следующий шаг";
             this.nextStepButton.UseVisualStyleBackColor = true;
+            this.nextStepButton.Click += new System.EventHandler(this.nextStepButton_Click);
             // 
             // pdfLoadButton
             // 
@@ -137,8 +139,9 @@ namespace PIS
             // 
             // editButton
             // 
+            this.editButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.editButton.Image = global::PIS.Properties.Resources.edit;
-            this.editButton.Location = new System.Drawing.Point(618, 3);
+            this.editButton.Location = new System.Drawing.Point(968, 3);
             this.editButton.Name = "editButton";
             this.editButton.Size = new System.Drawing.Size(40, 40);
             this.editButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -148,8 +151,9 @@ namespace PIS
             // 
             // readButton
             // 
+            this.readButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.readButton.Image = global::PIS.Properties.Resources.eye;
-            this.readButton.Location = new System.Drawing.Point(618, 3);
+            this.readButton.Location = new System.Drawing.Point(968, 3);
             this.readButton.Name = "readButton";
             this.readButton.Size = new System.Drawing.Size(40, 40);
             this.readButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -160,8 +164,9 @@ namespace PIS
             // 
             // saveButton
             // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.Image = global::PIS.Properties.Resources.save;
-            this.saveButton.Location = new System.Drawing.Point(618, 3);
+            this.saveButton.Location = new System.Drawing.Point(968, 3);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(40, 40);
             this.saveButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -238,7 +243,10 @@ namespace PIS
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(230)))));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.cardIdLabel);
             this.panel1.Controls.Add(this.returnButton);
             this.panel1.Controls.Add(this.cardIdValue);
@@ -247,7 +255,7 @@ namespace PIS
             this.panel1.Controls.Add(this.editButton);
             this.panel1.Location = new System.Drawing.Point(7, 6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(676, 47);
+            this.panel1.Size = new System.Drawing.Size(1024, 47);
             this.panel1.TabIndex = 20;
             // 
             // userLabel
@@ -307,10 +315,23 @@ namespace PIS
             this.areaReadBox.TabIndex = 26;
             this.areaReadBox.Text = "Тюмень";
             // 
+            // statusBox1
+            // 
+            this.statusBox1.CurrentStatus = null;
+            this.statusBox1.Editable = false;
+            this.statusBox1.IsLeftButtonEnabled = true;
+            this.statusBox1.IsRightButtonEnabled = true;
+            this.statusBox1.Location = new System.Drawing.Point(256, 543);
+            this.statusBox1.Name = "statusBox1";
+            this.statusBox1.Size = new System.Drawing.Size(642, 56);
+            this.statusBox1.TabIndex = 27;
+            // 
             // Card
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
+            this.Controls.Add(this.statusBox1);
             this.Controls.Add(this.areaReadBox);
             this.Controls.Add(this.areaEditBox);
             this.Controls.Add(this.pdfOpenButton);
@@ -331,7 +352,8 @@ namespace PIS
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.areaLabel);
             this.Name = "Card";
-            this.Size = new System.Drawing.Size(691, 461);
+            this.Size = new System.Drawing.Size(1042, 761);
+            this.Load += new System.EventHandler(this.Card_Load);
             ((System.ComponentModel.ISupportInitialize)(this.editButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.readButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.saveButton)).EndInit();
@@ -370,5 +392,6 @@ namespace PIS
         private System.Windows.Forms.Button pdfOpenButton;
         private System.Windows.Forms.ComboBox areaEditBox;
         private System.Windows.Forms.TextBox areaReadBox;
+        private StatusBox statusBox1;
     }
 }
