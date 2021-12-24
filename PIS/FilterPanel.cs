@@ -12,20 +12,61 @@ namespace PIS
     public partial class FilterPanel : UserControl
     {
         public Form1 form1;
-        SortingBuilder sortingBuilder;
-        FilterBuilder filterBuilder;
+
+        int countOfEditableCardsWithNotifications;
+        public int CountOfEditableCardsWithNotifications
+        {
+            get
+            {
+                return countOfEditableCardsWithNotifications;
+            }
+            set
+            {
+                countOfEditableCardsWithNotifications = value;
+                countOfOfEditableCardsWithNotificationsBox.Text = "(" + value + ")";
+            }
+        }
+
+        int countOfEditableCardsWithoutNotifications;
+        public int CountOfEditableCardsWithoutNotifications
+        {
+            get
+            {
+                return countOfEditableCardsWithoutNotifications;
+            }
+            set
+            {
+                countOfEditableCardsWithoutNotifications = value;
+                countOfEditableCardsWithoutNotificationsBox.Text = "(" + value + ")";
+            }
+        }
+
+        int countOfOtherCards;
+        public int CountOfOtherCards
+        {
+            get
+            {
+                return countOfOtherCards;
+            }
+            set
+            {
+                countOfOtherCards = value;
+                countOfOtherCardsBox.Text = "(" + value + ")";
+            }
+        }
+        
         public FilterPanel()
         {
             InitializeComponent();
 
-            sortingBuilder = new SortingBuilder();
-            filterBuilder = new FilterBuilder();
             Reset();
         }
 
-
         void Reset()
         {
+            var sortingBuilder = new SortingBuilder();
+            var filterBuilder = new FilterBuilder();
+
             sortingBuilder.Reset();
 
             sortingByBox.SelectedIndex = sortingBuilder.SortingBy switch
@@ -62,135 +103,8 @@ namespace PIS
             CardIdRangeStart.Text = "";
             CardIdRangeEnd.Text = "";
 
-            checkBoxOfCommented.Checked = filterBuilder.Commented;
-            checkBoxOfAttachedPdf.Checked = filterBuilder.AttachedPdf;
-        }
-
-        private void sortingByBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            sortingBuilder.SortingBy = sortingByBox.SelectedIndex switch
-            {
-                0 => SortingBy.StatusChangeDateTime,
-                1 => SortingBy.CatchDate,
-                2 => SortingBy.CardId,
-                _ => throw new Exception()
-            };
-        }
-
-        private void orderByBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            sortingBuilder.OrderBy = orderByBox.SelectedIndex switch
-            {
-                0 => OrderBy.Descending,
-                1 => OrderBy.Ascending,
-                _ => throw new Exception()
-            };
-        }
-
-        private void checkBoxOfEditableCardsWithNotifications_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.EditableCardsWithNotifications = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfEditableCardsWithoutNotifications_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.EditableCardsWithoutNotifications = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfOtherCards_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.OtherCards = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfSubmittedForRevision_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.SubmittedForRevision] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfDraft_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.Draft] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfAgreementByCatchingOrganization_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.AgreementByCatchingOrganization] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfAgreedByCatchingOrganization_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.AgreedByCatchingOrganization] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfApprovedByCatchingOrganization_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.ApprovedByCatchingOrganization] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfAgreedByOmsu_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.AgreedByOmsu] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfApprovedByOmsu_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.FilterStatuses[Status.ApprovedByOmsu] = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfCommented_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.Commented = (sender as CheckBox).Checked;
-        }
-
-        private void checkBoxOfAttachedPdf_CheckedChanged(object sender, EventArgs e)
-        {
-            filterBuilder.AttachedPdf = (sender as CheckBox).Checked;
-        }
-
-        private void CardIdRangeStart_TextChanged(object sender, EventArgs e)
-        {
-            var text = (sender as TextBox).Text;
-            try
-            {
-                var parsed = Int32.Parse(text);
-                if (CardIdRangeEnd.Text != "" && parsed > filterBuilder.CardIdRange.End.Value)
-                {
-                    // TODO: Убрать это, сделать заливку фона у текстбокса.
-                    MessageBox.Show("Неправильный формат, начальное число должно быть не более конечного числа");
-                    return;
-                }
-                filterBuilder.CardIdRange = new Range(new Index(parsed), filterBuilder.CardIdRange.End);
-
-            }
-            catch (FormatException)
-            {
-                // TODO: Убрать это, сделать заливку фона у текстбокса.
-                MessageBox.Show("Неправильный формат, ввести можно только числа");
-                return;
-            }
-        }
-
-        private void CardIdRangeEnd_TextChanged(object sender, EventArgs e)
-        {
-            var text = (sender as TextBox).Text;
-            try
-            {
-                var parsed = Int32.Parse(text);
-                if(CardIdRangeStart.Text != "" && parsed < filterBuilder.CardIdRange.Start.Value)
-                {
-                    // TODO: Убрать это, сделать заливку фона у текстбокса.
-                    MessageBox.Show("Неправильный формат, начальное число должно быть не более конечного числа");
-                    return;
-                }
-                filterBuilder.CardIdRange = new Range(filterBuilder.CardIdRange.Start, new Index(parsed));
-
-            }
-            catch (FormatException)
-            {
-                // TODO: Убрать это, сделать заливку фона у текстбокса.
-                MessageBox.Show("Неправильный формат, ввести можно только числа");
-                 return;
-            }
+            checkBoxOfCommented.Checked = filterBuilder.IsCommented;
+            checkBoxOfAttachedPdf.Checked = filterBuilder.IsPdfAttached;
         }
 
         private void CardIdRangeStart_KeyPress(object sender, KeyPressEventArgs e)
@@ -205,7 +119,91 @@ namespace PIS
 
         private void applyButton_Click(object sender, EventArgs e)
         {
-            form1.UpdateRegistry(filterBuilder.Build(), sortingBuilder.Build());
+            var sortingBuilder = new SortingBuilder();
+            var filterBuilder = new FilterBuilder();
+
+            sortingBuilder.SortingBy = sortingByBox.SelectedIndex switch
+            {
+                0 => SortingBy.StatusChangeDateTime,
+                1 => SortingBy.CatchDate,
+                2 => SortingBy.CardId,
+                _ => throw new Exception()
+            };
+            sortingBuilder.OrderBy = orderByBox.SelectedIndex switch
+            {
+                0 => OrderBy.Descending,
+                1 => OrderBy.Ascending,
+                _ => throw new Exception()
+            };
+
+            filterBuilder.EditableCardsWithNotifications = checkBoxOfEditableCardsWithNotifications.Checked;
+            filterBuilder.EditableCardsWithoutNotifications = checkBoxOfEditableCardsWithoutNotifications.Checked;
+            filterBuilder.OtherCards = checkBoxOfOtherCards.Checked;
+
+            filterBuilder.FilterStatuses[Status.SubmittedForRevision] = checkBoxOfSubmittedForRevision.Checked;
+            filterBuilder.FilterStatuses[Status.Draft] = checkBoxOfDraft.Checked;
+            filterBuilder.FilterStatuses[Status.AgreementByCatchingOrganization]
+                = checkBoxOfAgreementByCatchingOrganization.Checked;
+            filterBuilder.FilterStatuses[Status.AgreedByCatchingOrganization]
+                = checkBoxOfAgreedByCatchingOrganization.Checked;
+            filterBuilder.FilterStatuses[Status.ApprovedByCatchingOrganization]
+                = checkBoxOfApprovedByCatchingOrganization.Checked;
+            filterBuilder.FilterStatuses[Status.AgreedByOmsu] = checkBoxOfAgreedByOmsu.Checked;
+            filterBuilder.FilterStatuses[Status.ApprovedByOmsu] = checkBoxOfApprovedByOmsu.Checked;
+
+            filterBuilder.IsCommented = checkBoxOfCommented.Checked;
+            filterBuilder.IsPdfAttached = checkBoxOfAttachedPdf.Checked;
+
+            (int? start, int? end)? cardIdRange = GetCardNumberRange();
+            if (!cardIdRange.HasValue)
+                return;
+            filterBuilder.CardIdRangeStart = cardIdRange.Value.start;
+            filterBuilder.CardIdRangeEnd = cardIdRange.Value.end;
+
+            form1.Filter = filterBuilder.Build();
+            form1.Sorting = sortingBuilder.Build();
+            form1.UpdateCardCovers(1);
+        }
+
+
+        (int?, int?)? GetCardNumberRange()
+        {
+            try
+            {
+                int? cardIdRangeStart = null;
+                if (CardIdRangeStart.Text != "")
+                {
+                    cardIdRangeStart = Int32.Parse(CardIdRangeStart.Text);
+                }
+
+                int? cardIdRangeEnd = null;
+                if (CardIdRangeEnd.Text != "")
+                {
+                    cardIdRangeEnd = Int32.Parse(CardIdRangeEnd.Text);
+                }
+
+                if (cardIdRangeStart.HasValue && cardIdRangeEnd.HasValue
+                    && cardIdRangeStart.Value > cardIdRangeEnd.Value)
+                {
+                    MessageBox.Show("Неправильный формат, начальное число должно быть не более конечного числа");
+                    return null;
+                }
+
+                if (cardIdRangeStart.HasValue && cardIdRangeStart.Value < 1
+                    || cardIdRangeEnd.HasValue && cardIdRangeEnd.Value < 1)
+                {
+                    MessageBox.Show("Неправильный формат, начальное и конечное числа должны быть не менее 1");
+                    return null;
+                }
+
+                return (cardIdRangeStart, cardIdRangeEnd);
+
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Неправильный формат, ввести можно только числа");
+                return null;
+            }
         }
 
         private void resetButton_Click(object sender, EventArgs e)

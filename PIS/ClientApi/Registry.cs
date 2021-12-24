@@ -2,32 +2,134 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SqlClient;
+using System.Linq;
 
 namespace ClientApi
 {
-    public class Registry : IEnumerable<Page>
+    public class Registry
     {
         Instance instance;
+        Filter filter;
+        Sorting sorting;
+        const int pageLength = 10;
 
-        public uint CountOfEditableCardsWithNotifications { get; }
-        public uint CountOfEditableCardsWithoutNotifications { get; }
-        public uint CountOfOtherCards { get; }
+
+        int roleId = 1;
 
 
-        /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal Registry(Instance instance, Filter? filter, Sorting? sorting)
+        public int CountOfEditableCardsWithNotifications { get; private set; }
+        public int CountOfEditableCardsWithoutNotifications { get; private set; }
+        public int CountOfOtherCards { get; private set; }
+
+        public int PageCount { get; private set; }
+
+        internal Registry(Instance instance, Filter filter, Sorting sorting)
         {
             this.instance = instance;
+            this.filter = filter;
+            this.sorting = sorting;
+
+            PageCount = GetPageCount();
+            CountOfEditableCardsWithNotifications
+                = GetNotificationCount(NotificationType.EditableCardsWithNotifications);
+            CountOfEditableCardsWithoutNotifications
+                = GetNotificationCount(NotificationType.EditableCardsWithoutNotifications);
+            CountOfOtherCards
+                = GetNotificationCount(NotificationType.OtherCards);
         }
 
-        public IEnumerator<Page> GetEnumerator()
+        int GetPageCount()
         {
-            throw new NotImplementedException();
+            var sqlcardCoverCount =
+                "SELECT COUNT(*) FROM Card JOIN get_last_status_of_cards() x ON id = x.card_id"
+                + " " + filter.sql
+                + ";";
+            var pageCountCommand = new SqlCommand(sqlcardCoverCount, instance.connection);
+
+            instance.connection.Open();
+            var cardCoverCount = (int)pageCountCommand.ExecuteScalar();
+            instance.connection.Close();
+
+            return cardCoverCount / pageLength + cardCoverCount % pageLength != 0 ? 1 : 0;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        int GetNotificationCount(NotificationType notificationType)
         {
-            throw new NotImplementedException();
+            var sqlFunctionName = notificationType switch
+            {
+                NotificationType.EditableCardsWithNotifications
+                    => "get_card_role_statuses_of_edit_with_notification",
+                NotificationType.EditableCardsWithoutNotifications
+                    => "get_card_role_statuses_of_edit_without_notification",
+                NotificationType.OtherCards
+                    => "get_card_role_statuses_of_other_cards",
+                _ => throw new Exception()
+            };
+
+            var sql = $@"
+SELECT COUNT(*)
+    FROM get_last_status_of_cards() s
+    JOIN {sqlFunctionName}({roleId}) t ON s.status_id = t.status_id;";
+            var sqlCommand = new SqlCommand(sql, instance.connection);
+
+            instance.connection.Open();
+            var result = (int)sqlCommand.ExecuteScalar();
+            instance.connection.Close();
+
+            return result;
+        }
+
+
+        /// Номера страниц начинаются с единицы
+        public Page this[int pageNumber]
+        {
+            get
+            {
+                if (pageNumber < 1)
+                    throw new ArgumentException();
+
+                var cardCovers = new List<CardCover>(pageLength);
+
+                var sqlQuery = @"
+SELECT x.card_id, x.status_id, x.status_change_datetime, catchLocality, catchDate,
+    CASE WHEN pdf IS NULL THEN 'False' ELSE 'True' END isPdfAttached,
+    CASE WHEN comment IS NULL THEN 'False' ELSE 'True' END isCommented
+	FROM Card
+	JOIN get_last_status_of_cards() x
+	ON id = x.card_id"
+                    + " " + filter.sql
+                    + " " + sorting.sql
+                    + " " + @$"OFFSET {(pageNumber - 1) * pageLength} ROWS
+FETCH NEXT {pageLength} ROWS ONLY"
+                    + ";";
+
+                var queryCommand = new SqlCommand(sqlQuery, instance.connection);
+
+                instance.connection.Open();
+
+                using (SqlDataReader reader = queryCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var cardCover = new CardCover(
+                            instance,
+                            reader.GetInt32(0),
+                            (Status)reader.GetInt32(1),
+                            reader.GetDateTime(2),
+                            reader.GetString(3),
+                            reader.GetDateTime(4),
+                            Boolean.Parse(reader.GetString(5)),
+                            Boolean.Parse(reader.GetString(6)));
+
+                        cardCovers.Add(cardCover);
+                    }
+                }
+
+                instance.connection.Close();
+
+                return new Page(instance, cardCovers);
+            }
         }
     }
 
@@ -39,7 +141,7 @@ namespace ClientApi
         public FilterBuilder()
         {
             filterStatuses = new FilterStatuses();
-            CardIdRange = Range.All;
+            Reset();
         }
 
         public FilterStatuses FilterStatuses
@@ -54,38 +156,107 @@ namespace ClientApi
         public bool EditableCardsWithoutNotifications { get; set; }
         public bool OtherCards { get; set; }
 
-        public Range CardIdRange { get; set; }
-        public bool AttachedPdf { get; set; }
-        public bool Commented { get; set; }
+        int? cardIdRangeStart;
+        public int? CardIdRangeStart {
+            get
+            {
+                return cardIdRangeStart;
+            }
+            set
+            {
+                if(value.HasValue && (CardIdRangeEnd.HasValue && value.Value > CardIdRangeEnd.Value
+                    || value.Value < 1))
+                    throw new ArgumentException();
+
+                cardIdRangeStart = value;
+            }
+        }
+        int? cardIdRangeEnd;
+        public int? CardIdRangeEnd
+        {
+            get
+            {
+                return cardIdRangeEnd;
+            }
+            set
+            {
+                if (value.HasValue && (CardIdRangeStart.HasValue && value.Value < CardIdRangeStart.Value
+                    || value.Value < 1))
+                    throw new ArgumentException();
+
+                cardIdRangeEnd = value;
+            }
+        }
+        public bool IsPdfAttached { get; set; }
+        public bool IsCommented { get; set; }
 
         public void Reset()
         {
             EditableCardsWithNotifications = false;
             EditableCardsWithoutNotifications = false;
-            OtherCards = false;
+            OtherCards = false;            
 
             filterStatuses.Reset();
 
-            AttachedPdf = false;
-            Commented = false;
+            CardIdRangeStart = null;
+            CardIdRangeEnd = null;
+
+            IsPdfAttached = false;
+            IsCommented = false;
         }
 
         public Filter Build()
         {
-            throw new NotImplementedException();
+            const int roleId = 1;
+
+            var statuses = String.Join(" OR ",
+                filterStatuses.statuses
+                    .Select((x, i) => (x, i)).Where(t => t.x).Select(t => $"x.status_id = {t.i + 1}"));
+            var rangeStart = CardIdRangeStart.HasValue ? $"x.card_id >= {CardIdRangeStart.Value}" : "";
+            var rangeEnd = CardIdRangeEnd.HasValue ? $"x.card_id <= {CardIdRangeEnd.Value}" : "";
+            var isPdfAttached = IsPdfAttached ? @"pdf IS NOT NULL" : "";
+            var isCommented = IsCommented ? @"comment IS NOT NULL" : "";
+
+            var roleStatusesOfCardEditWithNotification
+                = $"SELECT status_id FROM get_card_role_statuses_of_edit_with_notification({roleId})";
+
+            var roleStatusesOfCardEditWithoutNotification
+                = $"SELECT status_id FROM get_card_role_statuses_of_edit_without_notification({roleId})";
+
+            var otherCardStatuses = $"SELECT status_id FROM get_card_role_statuses_of_other_cards({roleId})";
+
+            var cardTypes = String.Join(" UNION ", new string[]
+            {
+                EditableCardsWithNotifications ? roleStatusesOfCardEditWithNotification : "",
+                EditableCardsWithoutNotifications ? roleStatusesOfCardEditWithoutNotification : "",
+                OtherCards ? otherCardStatuses : ""
+            }.Where(x => x != ""));
+            if (cardTypes != "")
+                cardTypes = $"x.status_id IN ({cardTypes})";
+
+            var sql = String.Join(" AND ", new string[]
+            {
+                cardTypes,
+                statuses,
+                rangeStart,
+                rangeEnd,
+                isPdfAttached,
+                isCommented
+            }.Where(x => x != "").Select(x => "(" + x + ")"));
+            if (sql != "")
+                sql = $"WHERE {sql}";
+
+            return new Filter(sql);
         }
     }
 
     public class FilterStatuses
     {
-        /// Эти поля должны вызываться в пределах неймспейса `ClientApi`.
-        internal bool submittedForRevision = false;
-        internal bool draft = false;
-        internal bool agreementByCatchingOrganization = false;
-        internal bool agreedByCatchingOrganization = false;
-        internal bool approvedByCatchingOrganization = false;
-        internal bool agreedByOmsu = false;
-        internal bool approvedByOmsu = false;
+        const int statusCount = 7;
+
+        /// Это поле должно вызываться в пределах неймспейса `ClientApi`.
+        /// `True` значит статус под таким индексом активен. Индекс статуса равен номеру этого статуса минус 1.
+        internal bool[] statuses = new bool[statusCount];
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
         internal FilterStatuses() { }
@@ -94,74 +265,32 @@ namespace ClientApi
         {
             get
             {
-                // TODO: Сделать это иначе
-                switch (status)
-                {
-                    case Status.SubmittedForRevision:
-                        return submittedForRevision;
-                    case Status.Draft:
-                        return draft;
-                    case Status.AgreementByCatchingOrganization:
-                        return agreementByCatchingOrganization;
-                    case Status.AgreedByCatchingOrganization:
-                        return agreedByCatchingOrganization;
-                    case Status.ApprovedByCatchingOrganization:
-                        return approvedByCatchingOrganization;
-                    case Status.AgreedByOmsu:
-                        return agreedByOmsu;
-                    case Status.ApprovedByOmsu:
-                        return approvedByOmsu;
-                    default:
-                        throw new Exception();
-                }
+                return statuses[(int)status - 1];
             }
             set
             {
-                // TODO: Сделать это иначе
-                switch (status)
-                {
-                    case Status.SubmittedForRevision:
-                        submittedForRevision = value;
-                        break;
-                    case Status.Draft:
-                        draft = value;
-                        break;
-                    case Status.AgreementByCatchingOrganization:
-                        agreementByCatchingOrganization = value;
-                        break;
-                    case Status.AgreedByCatchingOrganization:
-                        agreedByCatchingOrganization = value;
-                        break;
-                    case Status.ApprovedByCatchingOrganization:
-                        approvedByCatchingOrganization = value;
-                        break;
-                    case Status.AgreedByOmsu:
-                        agreedByOmsu = value;
-                        break;
-                    case Status.ApprovedByOmsu:
-                        approvedByOmsu = value;
-                        break;
-                    default:
-                        throw new Exception();
-                }
+                statuses[(int)status - 1] = value;
             }
         }
 
         /// Этот метод должен вызываться в пределах неймспейса `ClientApi`.
         internal void Reset()
         {
-            submittedForRevision = false;
-            draft = false;
-            agreementByCatchingOrganization = false;
-            agreedByCatchingOrganization = false;
-            approvedByCatchingOrganization = false;
-            agreedByOmsu = false;
-            approvedByOmsu = false;
+            for (int i = 0; i < statuses.Length; ++i)
+                statuses[i] = false;
         }
     }
 
     // Параметры фильтра, спарсенные в представление протокола
-    public class Filter { }
+    public class Filter
+    {
+        internal string sql;
+
+        internal Filter(string sql)
+        {
+            this.sql = sql;
+        }
+    }
 
 
     public class SortingBuilder
@@ -182,7 +311,30 @@ namespace ClientApi
 
         public Sorting Build()
         {
-            throw new NotImplementedException();
+            var sql = SortingBy switch
+            {
+                SortingBy.StatusChangeDateTime => OrderBy switch
+                {
+                    OrderBy.Descending => @"ORDER BY x.status_change_datetime DESC, x.card_id ASC",
+                    OrderBy.Ascending => @"ORDER BY x.status_change_datetime ASC, x.card_id ASC",
+                    _ => throw new Exception()
+                },
+                SortingBy.CatchDate => OrderBy switch
+                {
+                    OrderBy.Descending => @"ORDER BY catchDate DESC, x.card_id ASC",
+                    OrderBy.Ascending => @"ORDER BY catchDate ASC, x.card_id ASC",
+                    _ => throw new Exception()
+                },
+                SortingBy.CardId => OrderBy switch
+                {
+                    OrderBy.Descending => @"ORDER BY x.card_id DESC, x.status_change_datetime DESC",
+                    OrderBy.Ascending => @"ORDER BY x.card_id ASC, x.status_change_datetime DESC",
+                    _ => throw new Exception()
+                },
+                _ => throw new Exception()
+            };
+
+            return new Sorting(sql);
         }
     }
 
@@ -200,27 +352,37 @@ namespace ClientApi
     }
 
     // Параметры сортировки, спарсенные в представление протокола
-    public class Sorting { }
+    public class Sorting
+    {
+        internal string sql;
+
+        internal Sorting(string sql)
+        {
+            this.sql = sql;
+        }
+    }
 
 
     public class Page : IEnumerable<CardCover>
     {
         Instance instance;
+        List<CardCover> cardCovers;
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal Page(Instance instance)
+        internal Page(Instance instance, List<CardCover> cardCovers)
         {
             this.instance = instance;
+            this.cardCovers = cardCovers;
         }
 
         public IEnumerator<CardCover> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return cardCovers.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return cardCovers.GetEnumerator();
         }
     }
 
@@ -229,7 +391,7 @@ namespace ClientApi
     {
         Instance Instance;
 
-        public uint CardId { get; private set; }
+        public int CardId { get; private set; }
         public Status Status { get; private set; }
         public DateTime StatusChangeDate { get; private set; }
         public string CatchLocality { get; private set; }
@@ -238,16 +400,24 @@ namespace ClientApi
         public bool IsCommented { get; private set; }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal CardCover(Instance Instance, uint cardId, Status status, DateTime statusChangeDate,
-            string locality, DateTime catchDate, bool isPdfAttached, bool isCommented)
+        internal CardCover(Instance Instance, int cardId, Status status, DateTime statusChangeDate,
+            string catchLocality, DateTime catchDate, bool isPdfAttached, bool isCommented)
         {
             CardId = cardId;
             Status = status;
             StatusChangeDate = statusChangeDate;
-            CatchLocality = locality;
+            CatchLocality = catchLocality;
             CatchDate = catchDate;
             IsPdfAttached = isPdfAttached;
             IsCommented = isCommented;
         }
+    }
+
+
+    public enum NotificationType
+    {
+        EditableCardsWithNotifications,
+        EditableCardsWithoutNotifications,
+        OtherCards
     }
 }

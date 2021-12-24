@@ -6,10 +6,10 @@ namespace ClientApi
 {
     public class CardContent
     {
-        public uint CardId { get; }
+        public int CardId { get; }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal CardContent(uint cardId)
+        internal CardContent(int cardId)
         {
             CardId = cardId;
         }
@@ -23,7 +23,7 @@ namespace ClientApi
         Status[] statuses;
         int currentStatusIndex;
 
-        public uint CardId { get; private set; }
+        public int CardId { get; private set; }
 
         /// Можно ли отправить карточку на следующую стадию?
         public bool IsCardSentToNextStage {
@@ -49,7 +49,7 @@ namespace ClientApi
         }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal EditableCard(Instance instance, uint cardId, Status[] statuses, int currentStatusIndex)
+        internal EditableCard(Instance instance, int cardId, Status[] statuses, int currentStatusIndex)
         {
             this.instance = instance;
             CardId = cardId;
@@ -85,18 +85,18 @@ namespace ClientApi
     public enum Status
     {
         // Отправлено на доработку
-        SubmittedForRevision,
+        SubmittedForRevision = 1,
         // Черновик
-        Draft,
+        Draft = 2,
         // Согласование в организации по отлову
-        AgreementByCatchingOrganization,
+        AgreementByCatchingOrganization = 3,
         // Согласовано в организации по отлову
-        AgreedByCatchingOrganization,
+        AgreedByCatchingOrganization = 4,
         // Утверждено в организации по отлову
-        ApprovedByCatchingOrganization,
+        ApprovedByCatchingOrganization = 5,
         // Согласовано в ОМСУ
-        AgreedByOmsu,
+        AgreedByOmsu = 6,
         // Утверждено в ОМСУ
-        ApprovedByOmsu
+        ApprovedByOmsu = 7
     }
 }

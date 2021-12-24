@@ -47,9 +47,9 @@ namespace PIS
             this.checkBoxOfAgreedByOmsu = new System.Windows.Forms.CheckBox();
             this.checkBoxOfApprovedByCatchingOrganization = new System.Windows.Forms.CheckBox();
             this.checkBoxOfAgreedByCatchingOrganization = new System.Windows.Forms.CheckBox();
-            this.countOfOfEditableCardsWithNotifications = new System.Windows.Forms.Label();
-            this.countOfOfEditableCardsWithoutNotifications = new System.Windows.Forms.Label();
-            this.CountOfOtherCards = new System.Windows.Forms.Label();
+            this.countOfOfEditableCardsWithNotificationsBox = new System.Windows.Forms.Label();
+            this.countOfEditableCardsWithoutNotificationsBox = new System.Windows.Forms.Label();
+            this.countOfOtherCardsBox = new System.Windows.Forms.Label();
             this.resetButton = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
             this.CardIdRangeStart = new System.Windows.Forms.TextBox();
@@ -68,7 +68,6 @@ namespace PIS
             this.checkBoxOfEditableCardsWithNotifications.TabIndex = 0;
             this.checkBoxOfEditableCardsWithNotifications.Text = "Редактируемые с уведомлениями";
             this.checkBoxOfEditableCardsWithNotifications.UseVisualStyleBackColor = true;
-            this.checkBoxOfEditableCardsWithNotifications.CheckedChanged += new System.EventHandler(this.checkBoxOfEditableCardsWithNotifications_CheckedChanged);
             // 
             // checkBoxOfEditableCardsWithoutNotifications
             // 
@@ -80,7 +79,6 @@ namespace PIS
             this.checkBoxOfEditableCardsWithoutNotifications.TabIndex = 1;
             this.checkBoxOfEditableCardsWithoutNotifications.Text = "Редактируемые без уведомлений";
             this.checkBoxOfEditableCardsWithoutNotifications.UseVisualStyleBackColor = true;
-            this.checkBoxOfEditableCardsWithoutNotifications.CheckedChanged += new System.EventHandler(this.checkBoxOfEditableCardsWithoutNotifications_CheckedChanged);
             // 
             // checkBoxOfOtherCards
             // 
@@ -92,7 +90,6 @@ namespace PIS
             this.checkBoxOfOtherCards.TabIndex = 2;
             this.checkBoxOfOtherCards.Text = "Остальные";
             this.checkBoxOfOtherCards.UseVisualStyleBackColor = true;
-            this.checkBoxOfOtherCards.CheckedChanged += new System.EventHandler(this.checkBoxOfOtherCards_CheckedChanged);
             // 
             // checkBoxOfAttachedPdf
             // 
@@ -104,7 +101,6 @@ namespace PIS
             this.checkBoxOfAttachedPdf.TabIndex = 3;
             this.checkBoxOfAttachedPdf.Text = "PDF файл";
             this.checkBoxOfAttachedPdf.UseVisualStyleBackColor = true;
-            this.checkBoxOfAttachedPdf.CheckedChanged += new System.EventHandler(this.checkBoxOfAttachedPdf_CheckedChanged);
             // 
             // checkBoxOfCommented
             // 
@@ -116,7 +112,6 @@ namespace PIS
             this.checkBoxOfCommented.TabIndex = 4;
             this.checkBoxOfCommented.Text = "Комментарий";
             this.checkBoxOfCommented.UseVisualStyleBackColor = true;
-            this.checkBoxOfCommented.CheckedChanged += new System.EventHandler(this.checkBoxOfCommented_CheckedChanged);
             // 
             // CardIdRangeEnd
             // 
@@ -126,7 +121,6 @@ namespace PIS
             this.CardIdRangeEnd.PlaceholderText = "До";
             this.CardIdRangeEnd.Size = new System.Drawing.Size(168, 31);
             this.CardIdRangeEnd.TabIndex = 7;
-            this.CardIdRangeEnd.TextChanged += new System.EventHandler(this.CardIdRangeEnd_TextChanged);
             this.CardIdRangeEnd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CardIdRangeEnd_KeyPress);
             // 
             // dashLabelOfCardNumberRange
@@ -194,7 +188,6 @@ namespace PIS
             this.checkBoxOfSubmittedForRevision.TabIndex = 13;
             this.checkBoxOfSubmittedForRevision.Text = "Отправлено на доработку";
             this.checkBoxOfSubmittedForRevision.UseVisualStyleBackColor = true;
-            this.checkBoxOfSubmittedForRevision.CheckedChanged += new System.EventHandler(this.checkBoxOfSubmittedForRevision_CheckedChanged);
             // 
             // checkBoxOfDraft
             // 
@@ -206,7 +199,6 @@ namespace PIS
             this.checkBoxOfDraft.TabIndex = 14;
             this.checkBoxOfDraft.Text = "Черновик";
             this.checkBoxOfDraft.UseVisualStyleBackColor = true;
-            this.checkBoxOfDraft.CheckedChanged += new System.EventHandler(this.checkBoxOfDraft_CheckedChanged);
             // 
             // checkBoxOfAgreementByCatchingOrganization
             // 
@@ -218,7 +210,6 @@ namespace PIS
             this.checkBoxOfAgreementByCatchingOrganization.TabIndex = 15;
             this.checkBoxOfAgreementByCatchingOrganization.Text = "Согласование в организации по отлову";
             this.checkBoxOfAgreementByCatchingOrganization.UseVisualStyleBackColor = true;
-            this.checkBoxOfAgreementByCatchingOrganization.CheckedChanged += new System.EventHandler(this.checkBoxOfAgreementByCatchingOrganization_CheckedChanged);
             // 
             // checkBoxOfApprovedByOmsu
             // 
@@ -230,7 +221,6 @@ namespace PIS
             this.checkBoxOfApprovedByOmsu.TabIndex = 16;
             this.checkBoxOfApprovedByOmsu.Text = "Утверждено в ОМСУ";
             this.checkBoxOfApprovedByOmsu.UseVisualStyleBackColor = true;
-            this.checkBoxOfApprovedByOmsu.CheckedChanged += new System.EventHandler(this.checkBoxOfApprovedByOmsu_CheckedChanged);
             // 
             // checkBoxOfAgreedByOmsu
             // 
@@ -242,7 +232,6 @@ namespace PIS
             this.checkBoxOfAgreedByOmsu.TabIndex = 17;
             this.checkBoxOfAgreedByOmsu.Text = "Согласовано в ОМСУ";
             this.checkBoxOfAgreedByOmsu.UseVisualStyleBackColor = true;
-            this.checkBoxOfAgreedByOmsu.CheckedChanged += new System.EventHandler(this.checkBoxOfAgreedByOmsu_CheckedChanged);
             // 
             // checkBoxOfApprovedByCatchingOrganization
             // 
@@ -254,7 +243,6 @@ namespace PIS
             this.checkBoxOfApprovedByCatchingOrganization.TabIndex = 18;
             this.checkBoxOfApprovedByCatchingOrganization.Text = "Утверждено в организации по отлову";
             this.checkBoxOfApprovedByCatchingOrganization.UseVisualStyleBackColor = true;
-            this.checkBoxOfApprovedByCatchingOrganization.CheckedChanged += new System.EventHandler(this.checkBoxOfApprovedByCatchingOrganization_CheckedChanged);
             // 
             // checkBoxOfAgreedByCatchingOrganization
             // 
@@ -266,40 +254,39 @@ namespace PIS
             this.checkBoxOfAgreedByCatchingOrganization.TabIndex = 19;
             this.checkBoxOfAgreedByCatchingOrganization.Text = "Согласовано в организации по отлову";
             this.checkBoxOfAgreedByCatchingOrganization.UseVisualStyleBackColor = true;
-            this.checkBoxOfAgreedByCatchingOrganization.CheckedChanged += new System.EventHandler(this.checkBoxOfAgreedByCatchingOrganization_CheckedChanged);
             // 
-            // countOfOfEditableCardsWithNotifications
+            // countOfOfEditableCardsWithNotificationsBox
             // 
-            this.countOfOfEditableCardsWithNotifications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.countOfOfEditableCardsWithNotifications.Location = new System.Drawing.Point(327, 164);
-            this.countOfOfEditableCardsWithNotifications.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.countOfOfEditableCardsWithNotifications.Name = "countOfOfEditableCardsWithNotifications";
-            this.countOfOfEditableCardsWithNotifications.Size = new System.Drawing.Size(74, 25);
-            this.countOfOfEditableCardsWithNotifications.TabIndex = 20;
-            this.countOfOfEditableCardsWithNotifications.Text = "(1234)";
-            this.countOfOfEditableCardsWithNotifications.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.countOfOfEditableCardsWithNotificationsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.countOfOfEditableCardsWithNotificationsBox.Location = new System.Drawing.Point(327, 164);
+            this.countOfOfEditableCardsWithNotificationsBox.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.countOfOfEditableCardsWithNotificationsBox.Name = "countOfOfEditableCardsWithNotificationsBox";
+            this.countOfOfEditableCardsWithNotificationsBox.Size = new System.Drawing.Size(74, 25);
+            this.countOfOfEditableCardsWithNotificationsBox.TabIndex = 20;
+            this.countOfOfEditableCardsWithNotificationsBox.Text = "(1234)";
+            this.countOfOfEditableCardsWithNotificationsBox.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // countOfOfEditableCardsWithoutNotifications
+            // countOfEditableCardsWithoutNotificationsBox
             // 
-            this.countOfOfEditableCardsWithoutNotifications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.countOfOfEditableCardsWithoutNotifications.Location = new System.Drawing.Point(327, 197);
-            this.countOfOfEditableCardsWithoutNotifications.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.countOfOfEditableCardsWithoutNotifications.Name = "countOfOfEditableCardsWithoutNotifications";
-            this.countOfOfEditableCardsWithoutNotifications.Size = new System.Drawing.Size(74, 25);
-            this.countOfOfEditableCardsWithoutNotifications.TabIndex = 21;
-            this.countOfOfEditableCardsWithoutNotifications.Text = "(1234)";
-            this.countOfOfEditableCardsWithoutNotifications.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.countOfEditableCardsWithoutNotificationsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.countOfEditableCardsWithoutNotificationsBox.Location = new System.Drawing.Point(327, 197);
+            this.countOfEditableCardsWithoutNotificationsBox.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.countOfEditableCardsWithoutNotificationsBox.Name = "countOfEditableCardsWithoutNotificationsBox";
+            this.countOfEditableCardsWithoutNotificationsBox.Size = new System.Drawing.Size(74, 25);
+            this.countOfEditableCardsWithoutNotificationsBox.TabIndex = 21;
+            this.countOfEditableCardsWithoutNotificationsBox.Text = "(1234)";
+            this.countOfEditableCardsWithoutNotificationsBox.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // CountOfOtherCards
+            // countOfOtherCardsBox
             // 
-            this.CountOfOtherCards.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CountOfOtherCards.Location = new System.Drawing.Point(239, 230);
-            this.CountOfOtherCards.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.CountOfOtherCards.Name = "CountOfOtherCards";
-            this.CountOfOtherCards.Size = new System.Drawing.Size(162, 25);
-            this.CountOfOtherCards.TabIndex = 22;
-            this.CountOfOtherCards.Text = "(1234)";
-            this.CountOfOtherCards.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.countOfOtherCardsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.countOfOtherCardsBox.Location = new System.Drawing.Point(239, 230);
+            this.countOfOtherCardsBox.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.countOfOtherCardsBox.Name = "countOfOtherCardsBox";
+            this.countOfOtherCardsBox.Size = new System.Drawing.Size(162, 25);
+            this.countOfOtherCardsBox.TabIndex = 22;
+            this.countOfOtherCardsBox.Text = "(1234)";
+            this.countOfOtherCardsBox.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // resetButton
             // 
@@ -333,7 +320,6 @@ namespace PIS
             this.CardIdRangeStart.PlaceholderText = "От";
             this.CardIdRangeStart.Size = new System.Drawing.Size(168, 31);
             this.CardIdRangeStart.TabIndex = 6;
-            this.CardIdRangeStart.TextChanged += new System.EventHandler(this.CardIdRangeStart_TextChanged);
             this.CardIdRangeStart.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CardIdRangeStart_KeyPress);
             // 
             // label5
@@ -360,7 +346,6 @@ namespace PIS
             this.sortingByBox.Name = "sortingByBox";
             this.sortingByBox.Size = new System.Drawing.Size(370, 33);
             this.sortingByBox.TabIndex = 26;
-            this.sortingByBox.SelectedIndexChanged += new System.EventHandler(this.sortingByBox_SelectedIndexChanged);
             // 
             // orderByBox
             // 
@@ -374,7 +359,6 @@ namespace PIS
             this.orderByBox.Name = "orderByBox";
             this.orderByBox.Size = new System.Drawing.Size(370, 33);
             this.orderByBox.TabIndex = 27;
-            this.orderByBox.SelectedIndexChanged += new System.EventHandler(this.orderByBox_SelectedIndexChanged);
             // 
             // FilterPanel
             // 
@@ -390,9 +374,9 @@ namespace PIS
             this.Controls.Add(this.label5);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.resetButton);
-            this.Controls.Add(this.CountOfOtherCards);
-            this.Controls.Add(this.countOfOfEditableCardsWithoutNotifications);
-            this.Controls.Add(this.countOfOfEditableCardsWithNotifications);
+            this.Controls.Add(this.countOfOtherCardsBox);
+            this.Controls.Add(this.countOfEditableCardsWithoutNotificationsBox);
+            this.Controls.Add(this.countOfOfEditableCardsWithNotificationsBox);
             this.Controls.Add(this.checkBoxOfAgreedByCatchingOrganization);
             this.Controls.Add(this.checkBoxOfApprovedByCatchingOrganization);
             this.Controls.Add(this.checkBoxOfAgreedByOmsu);
@@ -437,9 +421,9 @@ namespace PIS
         private System.Windows.Forms.CheckBox checkBoxOfAgreedByOmsu;
         private System.Windows.Forms.CheckBox checkBoxOfApprovedByCatchingOrganization;
         private System.Windows.Forms.CheckBox checkBoxOfAgreedByCatchingOrganization;
-        private System.Windows.Forms.Label countOfOfEditableCardsWithNotifications;
-        private System.Windows.Forms.Label countOfOfEditableCardsWithoutNotifications;
-        private System.Windows.Forms.Label CountOfOtherCards;
+        private System.Windows.Forms.Label countOfOfEditableCardsWithNotificationsBox;
+        private System.Windows.Forms.Label countOfEditableCardsWithoutNotificationsBox;
+        private System.Windows.Forms.Label countOfOtherCardsBox;
         private System.Windows.Forms.Button resetButton;
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.TextBox CardIdRangeStart;

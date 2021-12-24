@@ -15,6 +15,8 @@ namespace PIS
     public partial class Form1 : Form
     {
         Instance instance;
+        public Filter Filter { get; set; }
+        public Sorting Sorting { get; set; }
 
         public Form1()
         {
@@ -22,30 +24,38 @@ namespace PIS
         }
 
 
-        public void UpdateRegistry(Filter? filter, Sorting? sorting)
+        public void UpdateCardCovers(int pageNumber)
         {
-            var currentFilter = filter == null ? new FilterBuilder().Build() : filter;
-            var currentSorting = sorting == null ? new SortingBuilder().Build() : sorting;
+            var registry = instance.GetRegistry(Filter, Sorting);
+            filterPanel1.CountOfEditableCardsWithNotifications = registry.CountOfEditableCardsWithNotifications;
+            filterPanel1.CountOfEditableCardsWithoutNotifications = registry.CountOfEditableCardsWithoutNotifications;
+            filterPanel1.CountOfOtherCards = registry.CountOfOtherCards;
 
+            cardPanel.Controls.Clear();
+            foreach (var cardCover in registry[pageNumber])
+            {
+                var cardPreview = new CardPreview()
+                {
+                    CardCover = cardCover
+                };
+                cardPreview.Click += cardPreview_Click;
+                cardPanel.Controls.Add(cardPreview);
+            }
 
+            paginatorBox.UpdateData(pageNumber, registry.PageCount);
+            paginatorBox.Left = (paginatorPanel.Width - paginatorBox.Width) / 2;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Filter = new FilterBuilder().Build();
+            Sorting = new SortingBuilder().Build();
+
             filterPanel1.form1 = this;
 
-            instance = new ClientApi.Instance();
+            instance = new Instance();
 
-            /*
-            var filter = new ClientApi.FilterBuilder().Build();
-            var sorting = new ClientApi.SortingBuilder().Build();
-            var registry = instance.GetRegistry(filter, sorting);
-
-            foreach(var cardCover in registry.First())
-            {
-
-            }
-            */
+            UpdateCardCovers(1);
 
             card.Instance = instance;
 
@@ -55,51 +65,21 @@ namespace PIS
                 menuPanel.Visible = true;
                 cardPanel.Visible = true;
                 filterPanel1.Visible = true;
+                paginatorPanel.Visible = true;
             };
 
             card.Return = () =>
             {
                 card.Visible = false;
                 filterPanel1.Visible = true;
+                paginatorPanel.Visible = true;
                 menuPanel.Visible = true;
             };
 
-
-
-            var с1 = new CardPreview()
+            paginatorBox.OnPageClick = (pageNumber) =>
             {
-                CardCover = new CardCover(instance, 123, Status.AgreedByCatchingOrganization, new DateTime(2021, 8, 5),
-                "Тюмень", new DateTime(2021, 9, 4), true, true)
+                UpdateCardCovers(pageNumber);
             };
-            с1.Click += cardPreview_Click;
-            cardPanel.Controls.Add(с1);
-
-
-            var с2 = new CardPreview()
-            {
-                CardCover = new CardCover(instance, 234, Status.AgreedByOmsu, new DateTime(2021, 9, 15),
-                "Тюмень", new DateTime(2021, 10, 6), false, true)
-            };
-            с2.Click += cardPreview_Click;
-            cardPanel.Controls.Add(с2);
-
-            var с3 = new CardPreview()
-            {
-                CardCover = new CardCover(instance, 345, Status.SubmittedForRevision, new DateTime(2021, 10, 24),
-                "Тюмень", new DateTime(2021, 11, 8), true, false)
-            };
-            с3.Click += cardPreview_Click;
-            cardPanel.Controls.Add(с3);
-
-            var с4 = new CardPreview()
-            {
-                CardCover = new CardCover(instance, 456, Status.ApprovedByOmsu, new DateTime(2021, 11, 30),
-                "Тюмень", new DateTime(2021, 12, 10), false, false)
-            };
-            с4.Click += cardPreview_Click;
-            cardPanel.Controls.Add(с4);
-
-
 
         }
 
@@ -110,6 +90,7 @@ namespace PIS
             card.CardContent = instance.OpenCard(cardPreview.CardCover);
 
             filterPanel1.Visible = false;
+            paginatorPanel.Visible = false;
             menuPanel.Visible = false;
             card.Visible = true;
         }
@@ -122,6 +103,7 @@ namespace PIS
         private void logoutButton_Click(object sender, EventArgs e)
         {
             filterPanel1.Visible = false;
+            paginatorPanel.Visible = false;
             menuPanel.Visible = false;
             cardPanel.Visible = false;
             profilePanel.Visible = false;

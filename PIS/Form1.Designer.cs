@@ -46,9 +46,12 @@ namespace PIS
             this.RoleLabel = new System.Windows.Forms.Label();
             this.loginLabel = new System.Windows.Forms.Label();
             this.filterPanel1 = new PIS.FilterPanel();
+            this.paginatorPanel = new System.Windows.Forms.Panel();
+            this.paginatorBox = new PIS.Paginator();
             this.menuPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.profileButton)).BeginInit();
             this.profilePanel.SuspendLayout();
+            this.paginatorPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // cardPanel
@@ -242,12 +245,31 @@ namespace PIS
             this.filterPanel1.TabIndex = 5;
             this.filterPanel1.Visible = false;
             // 
+            // paginatorPanel
+            // 
+            this.paginatorPanel.Controls.Add(this.paginatorBox);
+            this.paginatorPanel.Location = new System.Drawing.Point(0, 820);
+            this.paginatorPanel.Name = "paginatorPanel";
+            this.paginatorPanel.Size = new System.Drawing.Size(613, 55);
+            this.paginatorPanel.TabIndex = 7;
+            this.paginatorPanel.Visible = false;
+            // 
+            // paginatorBox
+            // 
+            this.paginatorBox.AutoSize = true;
+            this.paginatorBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.paginatorBox.Location = new System.Drawing.Point(3, 5);
+            this.paginatorBox.Name = "paginatorBox";
+            this.paginatorBox.Size = new System.Drawing.Size(0, 0);
+            this.paginatorBox.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
             this.ClientSize = new System.Drawing.Size(1041, 877);
+            this.Controls.Add(this.paginatorPanel);
             this.Controls.Add(this.profilePanel);
             this.Controls.Add(this.menuPanel);
             this.Controls.Add(this.autorisation);
@@ -262,6 +284,8 @@ namespace PIS
             ((System.ComponentModel.ISupportInitialize)(this.profileButton)).EndInit();
             this.profilePanel.ResumeLayout(false);
             this.profilePanel.PerformLayout();
+            this.paginatorPanel.ResumeLayout(false);
+            this.paginatorPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -285,6 +309,8 @@ namespace PIS
         private System.Windows.Forms.TextBox fioBox;
         private System.Windows.Forms.Label fioLabel;
         private FilterPanel filterPanel1;
+        private System.Windows.Forms.Panel paginatorPanel;
+        private Paginator paginatorBox;
     }
 }
 
