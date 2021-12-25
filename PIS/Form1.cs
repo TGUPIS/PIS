@@ -14,25 +14,34 @@ namespace PIS
 {
     public partial class Form1 : Form
     {
-        Instance instance;
+        public Instance instance;
         public Filter Filter { get; set; }
         public Sorting Sorting { get; set; }
 
+        int currentPageNumber = 1;
         public Form1()
         {
             InitializeComponent();
         }
 
 
-        public void UpdateCardCovers(int pageNumber)
+        public void UpdateCardCovers(int? pageNumber)
         {
+            if(!pageNumber.HasValue)
+            {
+                pageNumber = currentPageNumber;
+            } else
+            {
+                currentPageNumber = pageNumber.Value;
+            }
+
             var registry = instance.GetRegistry(Filter, Sorting);
             filterPanel1.CountOfEditableCardsWithNotifications = registry.CountOfEditableCardsWithNotifications;
             filterPanel1.CountOfEditableCardsWithoutNotifications = registry.CountOfEditableCardsWithoutNotifications;
             filterPanel1.CountOfOtherCards = registry.CountOfOtherCards;
 
             cardPanel.Controls.Clear();
-            foreach (var cardCover in registry[pageNumber])
+            foreach (var cardCover in registry[pageNumber.Value])
             {
                 var cardPreview = new CardPreview()
                 {
@@ -42,18 +51,18 @@ namespace PIS
                 cardPanel.Controls.Add(cardPreview);
             }
 
-            paginatorBox.UpdateData(pageNumber, registry.PageCount);
+            paginatorBox.UpdateData(pageNumber.Value, registry.PageCount);
             paginatorBox.Left = (paginatorPanel.Width - paginatorBox.Width) / 2;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Filter = new FilterBuilder().Build();
-            Sorting = new SortingBuilder().Build();
+            instance = new Instance();
+
+            Filter = new FilterBuilder().Build(instance);
+            Sorting = new SortingBuilder().Build(instance);
 
             filterPanel1.form1 = this;
-
-            instance = new Instance();
 
             UpdateCardCovers(1);
 
@@ -70,6 +79,8 @@ namespace PIS
 
             card.Return = () =>
             {
+                UpdateCardCovers(null);
+
                 card.Visible = false;
                 filterPanel1.Visible = true;
                 paginatorPanel.Visible = true;

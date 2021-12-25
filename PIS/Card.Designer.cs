@@ -34,8 +34,8 @@ namespace PIS
             this.areaLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.statusBox = new System.Windows.Forms.TextBox();
-            this.reworkButton = new System.Windows.Forms.Button();
-            this.nextStepButton = new System.Windows.Forms.Button();
+            this.statusEditButton = new System.Windows.Forms.Button();
+            this.statusSaveButton = new System.Windows.Forms.Button();
             this.pdfLoadButton = new System.Windows.Forms.Button();
             this.editButton = new System.Windows.Forms.PictureBox();
             this.readButton = new System.Windows.Forms.PictureBox();
@@ -109,24 +109,28 @@ namespace PIS
             this.statusBox.TabIndex = 6;
             this.statusBox.Text = "Согласован в организации по отлову";
             // 
-            // reworkButton
+            // statusEditButton
             // 
-            this.reworkButton.Location = new System.Drawing.Point(43, 388);
-            this.reworkButton.Name = "reworkButton";
-            this.reworkButton.Size = new System.Drawing.Size(292, 34);
-            this.reworkButton.TabIndex = 7;
-            this.reworkButton.Text = "Отправить на доработку";
-            this.reworkButton.UseVisualStyleBackColor = true;
+            this.statusEditButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
+            this.statusEditButton.Location = new System.Drawing.Point(272, 705);
+            this.statusEditButton.Name = "statusEditButton";
+            this.statusEditButton.Size = new System.Drawing.Size(292, 34);
+            this.statusEditButton.TabIndex = 7;
+            this.statusEditButton.Text = "Изменить";
+            this.statusEditButton.UseVisualStyleBackColor = false;
+            this.statusEditButton.Click += new System.EventHandler(this.statusEditButton_Click);
             // 
-            // nextStepButton
+            // statusSaveButton
             // 
-            this.nextStepButton.Location = new System.Drawing.Point(359, 388);
-            this.nextStepButton.Name = "nextStepButton";
-            this.nextStepButton.Size = new System.Drawing.Size(292, 34);
-            this.nextStepButton.TabIndex = 8;
-            this.nextStepButton.Text = "Отправить на следующий шаг";
-            this.nextStepButton.UseVisualStyleBackColor = true;
-            this.nextStepButton.Click += new System.EventHandler(this.nextStepButton_Click);
+            this.statusSaveButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
+            this.statusSaveButton.Enabled = false;
+            this.statusSaveButton.Location = new System.Drawing.Point(578, 705);
+            this.statusSaveButton.Name = "statusSaveButton";
+            this.statusSaveButton.Size = new System.Drawing.Size(292, 34);
+            this.statusSaveButton.TabIndex = 8;
+            this.statusSaveButton.Text = "Сохранить";
+            this.statusSaveButton.UseVisualStyleBackColor = false;
+            this.statusSaveButton.Click += new System.EventHandler(this.statusSaveButton_Click);
             // 
             // pdfLoadButton
             // 
@@ -346,8 +350,8 @@ namespace PIS
             this.Controls.Add(this.cardDeleteButton);
             this.Controls.Add(this.exportButton);
             this.Controls.Add(this.pdfLoadButton);
-            this.Controls.Add(this.nextStepButton);
-            this.Controls.Add(this.reworkButton);
+            this.Controls.Add(this.statusSaveButton);
+            this.Controls.Add(this.statusEditButton);
             this.Controls.Add(this.statusBox);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.areaLabel);
@@ -372,8 +376,8 @@ namespace PIS
         private System.Windows.Forms.Label areaLabel;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.TextBox statusBox;
-        private System.Windows.Forms.Button reworkButton;
-        private System.Windows.Forms.Button nextStepButton;
+        private System.Windows.Forms.Button statusEditButton;
+        private System.Windows.Forms.Button statusSaveButton;
         private System.Windows.Forms.Button pdfLoadButton;
         private System.Windows.Forms.PictureBox editButton;
         private System.Windows.Forms.PictureBox readButton;

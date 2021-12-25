@@ -160,8 +160,8 @@ namespace PIS
             filterBuilder.CardIdRangeStart = cardIdRange.Value.start;
             filterBuilder.CardIdRangeEnd = cardIdRange.Value.end;
 
-            form1.Filter = filterBuilder.Build();
-            form1.Sorting = sortingBuilder.Build();
+            form1.Filter = filterBuilder.Build(form1.instance);
+            form1.Sorting = sortingBuilder.Build(form1.instance);
             form1.UpdateCardCovers(1);
         }
 

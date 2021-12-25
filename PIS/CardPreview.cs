@@ -21,7 +21,7 @@ namespace PIS
             {
                 cardCover = value;
                 idLabel.Text = "#" + value.CardId.ToString();
-                statusBox.Text = Form1.ConvertStatusToString(value.Status);
+                statusBox.Text = Form1.ConvertStatusToString(value.CurrentStatus);
                 areaBox.Text = value.CatchLocality;
 
                 isCommentedBox.Visible = value.IsCommented;

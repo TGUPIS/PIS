@@ -15,7 +15,8 @@ namespace ClientApi
         const int pageLength = 10;
 
 
-        int roleId = 1;
+
+        int roleId = 2;
 
 
         public int CountOfEditableCardsWithNotifications { get; private set; }
@@ -24,11 +25,12 @@ namespace ClientApi
 
         public int PageCount { get; private set; }
 
-        internal Registry(Instance instance, Filter filter, Sorting sorting)
+        internal Registry(Instance instance, Filter filter, Sorting sorting, int roleId)
         {
             this.instance = instance;
             this.filter = filter;
             this.sorting = sorting;
+            this.roleId = roleId;
 
             PageCount = GetPageCount();
             CountOfEditableCardsWithNotifications
@@ -112,10 +114,12 @@ FETCH NEXT {pageLength} ROWS ONLY"
                 {
                     while (reader.Read())
                     {
+                        var dataBaseStatus = (DataBaseStatus)reader.GetInt32(1);
+
                         var cardCover = new CardCover(
-                            instance,
                             reader.GetInt32(0),
-                            (Status)reader.GetInt32(1),
+                            FilterBuilder.ConvertDataBaseStatus(dataBaseStatus),
+                            dataBaseStatus,
                             reader.GetDateTime(2),
                             reader.GetString(3),
                             reader.GetDateTime(4),
@@ -205,25 +209,25 @@ FETCH NEXT {pageLength} ROWS ONLY"
             IsCommented = false;
         }
 
-        public Filter Build()
+        public Filter Build(Instance instance)
         {
-            const int roleId = 1;
-
             var statuses = String.Join(" OR ",
                 filterStatuses.statuses
-                    .Select((x, i) => (x, i)).Where(t => t.x).Select(t => $"x.status_id = {t.i + 1}"));
+                .Select((x, i) => (x, (Status)(i + 1))).Where(t => t.x)
+                .Select(t => ConvertStatus(t.Item2, instance.roleId)).Where(t => t.HasValue)
+                .Select(t => $"x.status_id = {(int)t.Value}"));
             var rangeStart = CardIdRangeStart.HasValue ? $"x.card_id >= {CardIdRangeStart.Value}" : "";
             var rangeEnd = CardIdRangeEnd.HasValue ? $"x.card_id <= {CardIdRangeEnd.Value}" : "";
             var isPdfAttached = IsPdfAttached ? @"pdf IS NOT NULL" : "";
             var isCommented = IsCommented ? @"comment IS NOT NULL" : "";
 
             var roleStatusesOfCardEditWithNotification
-                = $"SELECT status_id FROM get_card_role_statuses_of_edit_with_notification({roleId})";
+                = $"SELECT status_id FROM get_card_role_statuses_of_edit_with_notification({instance.roleId})";
 
             var roleStatusesOfCardEditWithoutNotification
-                = $"SELECT status_id FROM get_card_role_statuses_of_edit_without_notification({roleId})";
+                = $"SELECT status_id FROM get_card_role_statuses_of_edit_without_notification({instance.roleId})";
 
-            var otherCardStatuses = $"SELECT status_id FROM get_card_role_statuses_of_other_cards({roleId})";
+            var otherCardStatuses = $"SELECT status_id FROM get_card_role_statuses_of_other_cards({instance.roleId})";
 
             var cardTypes = String.Join(" UNION ", new string[]
             {
@@ -248,11 +252,54 @@ FETCH NEXT {pageLength} ROWS ONLY"
 
             return new Filter(sql);
         }
+
+        internal static DataBaseStatus? ConvertStatus(Status status, int roleId)
+        {
+            return status switch
+            {
+                Status.SubmittedForRevision => roleId switch
+                {
+                    1 => DataBaseStatus.SubmittedForRevisionToDraft,
+                    2 => DataBaseStatus.SubmittedForRevisionToAgreementByCatchingOrganization,
+                    3 => DataBaseStatus.SubmittedForRevisionToAgreedByCatchingOrganization,
+                    4 => DataBaseStatus.SubmittedForRevisionToApprovedByCatchingOrganization,
+                    5 => DataBaseStatus.SubmittedForRevisionToAgreedByOmsu,
+                    _ => null
+                },
+                Status.Draft => DataBaseStatus.Draft,
+                Status.AgreementByCatchingOrganization => DataBaseStatus.AgreementByCatchingOrganization,
+                Status.AgreedByCatchingOrganization => DataBaseStatus.AgreedByCatchingOrganization,
+                Status.ApprovedByCatchingOrganization => DataBaseStatus.ApprovedByCatchingOrganization,
+                Status.AgreedByOmsu => DataBaseStatus.AgreedByOmsu,
+                Status.ApprovedByOmsu => DataBaseStatus.ApprovedByOmsu,
+                _ => null
+            };
+        }
+
+        internal static Status ConvertDataBaseStatus(DataBaseStatus status)
+        {
+            return status switch
+            {
+                DataBaseStatus.SubmittedForRevisionToDraft => Status.Draft,
+                DataBaseStatus.SubmittedForRevisionToAgreementByCatchingOrganization => Status.Draft,
+                DataBaseStatus.SubmittedForRevisionToAgreedByCatchingOrganization => Status.Draft,
+                DataBaseStatus.SubmittedForRevisionToApprovedByCatchingOrganization => Status.Draft,
+                DataBaseStatus.SubmittedForRevisionToAgreedByOmsu => Status.Draft,
+                DataBaseStatus.SubmittedForRevisionToApprovedByOmsu => Status.Draft,
+                DataBaseStatus.Draft => Status.Draft,
+                DataBaseStatus.AgreementByCatchingOrganization => Status.AgreementByCatchingOrganization,
+                DataBaseStatus.AgreedByCatchingOrganization => Status.AgreedByCatchingOrganization,
+                DataBaseStatus.ApprovedByCatchingOrganization => Status.ApprovedByCatchingOrganization,
+                DataBaseStatus.AgreedByOmsu => Status.AgreedByOmsu,
+                DataBaseStatus.ApprovedByOmsu => Status.ApprovedByOmsu,
+                _ => throw new Exception()
+            };
+        }
     }
 
     public class FilterStatuses
     {
-        const int statusCount = 7;
+        const int statusCount = 12;
 
         /// Это поле должно вызываться в пределах неймспейса `ClientApi`.
         /// `True` значит статус под таким индексом активен. Индекс статуса равен номеру этого статуса минус 1.
@@ -309,7 +356,7 @@ FETCH NEXT {pageLength} ROWS ONLY"
             OrderBy = OrderBy.Descending;
         }
 
-        public Sorting Build()
+        public Sorting Build(Instance instance)
         {
             var sql = SortingBy switch
             {
@@ -392,7 +439,8 @@ FETCH NEXT {pageLength} ROWS ONLY"
         Instance Instance;
 
         public int CardId { get; private set; }
-        public Status Status { get; private set; }
+        public Status CurrentStatus { get; private set; }
+        internal DataBaseStatus CurrentDataBaseStatus { get; set; }
         public DateTime StatusChangeDate { get; private set; }
         public string CatchLocality { get; private set; }
         public DateTime CatchDate { get; private set; }
@@ -400,12 +448,14 @@ FETCH NEXT {pageLength} ROWS ONLY"
         public bool IsCommented { get; private set; }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal CardCover(Instance Instance, int cardId, Status status, DateTime statusChangeDate,
-            string catchLocality, DateTime catchDate, bool isPdfAttached, bool isCommented)
+        internal CardCover(int cardId, Status currentStatus, DataBaseStatus currentDataBaseStatus,
+            DateTime statusChangeDate, string catchLocality, DateTime catchDate,
+            bool isPdfAttached, bool isCommented)
         {
             CardId = cardId;
-            Status = status;
+            CurrentStatus = currentStatus;
             StatusChangeDate = statusChangeDate;
+            CurrentDataBaseStatus = currentDataBaseStatus;
             CatchLocality = catchLocality;
             CatchDate = catchDate;
             IsPdfAttached = isPdfAttached;

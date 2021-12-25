@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace ClientApi
 {
     /// Точка входа клиентского приложения на бэкенд.
     public class Instance
     {
+        /// Это поле должно вызываться в пределах неймспейса `ClientApi`.
+        internal int roleId = 2;
+
+
         string sqlString = @"Data Source=localhost;Initial Catalog=Animals;Integrated Security=True";
 
         /// Это поле должно вызываться в пределах неймспейса `ClientApi`.
@@ -15,45 +20,72 @@ namespace ClientApi
 
         public ProtocolVersion ProtocolVersion { get; }
 
-        public Instance() {
+        public Instance()
+        {
             connection = new SqlConnection(sqlString);
-
-
-
-
-
-
-            /*
-            var command = new SqlCommand("SELECT role_id, status_id FROM StatusChangeNotificationRoles", connection);
-
-            connection.Open();
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    System.Windows.Forms.MessageBox.Show(String.Format("{0}, {1}",
-                        reader[0], reader[1]));
-                }
-            }
-            connection.Close();
-            */
         }
 
         /// Текущий метод нигде не сохраняет `Filter` и `Sorting`, использует их только для чтения
         public Registry GetRegistry(Filter filter, Sorting sorting)
         {
-            return new Registry(this, filter, sorting);
+            return new Registry(this, filter, sorting, roleId);
         }
 
         public CardContent OpenCard(CardCover cardCover)
         {
-            return new CardContent(cardCover.CardId);
+
+            var version = GetCardVersion(connection, cardCover.CardId);
+            return new CardContent(cardCover.CardId, cardCover.CurrentStatus, cardCover.CurrentDataBaseStatus, version);
+        }
+
+        /// Этот метод должен вызываться в пределах неймспейса `ClientApi`.
+        internal static int GetCardVersion(SqlConnection sqlConnection, int cardId)
+        {
+            var sql = $@"
+SELECT version
+    FROM Card
+    WHERE id = {cardId}";
+            var sqlCommand = new SqlCommand(sql, sqlConnection);
+
+            sqlConnection.Open();
+            var result = (int)sqlCommand.ExecuteScalar();
+            sqlConnection.Close();
+
+            return result;
         }
 
         public EditableCard EditCard(CardContent cardContent)
         {
-            return new EditableCard(this, cardContent.CardId, new Status[] { Status.SubmittedForRevision,
-                Status.AgreedByCatchingOrganization, Status.ApprovedByCatchingOrganization }, 1);
+            var statusIds = GetEditStatuses(cardContent.CurrentDataBaseStatus);
+            var currentStatusIndex = statusIds.IndexOf(cardContent.CurrentDataBaseStatus);
+            return new EditableCard(this, cardContent.CardId, statusIds.ToArray(),
+                currentStatusIndex, cardContent.version);
+        }
+
+        List<DataBaseStatus> GetEditStatuses(DataBaseStatus currentStatus)
+        {
+            var sql = $@"
+SELECT new_status_id, sorting_order
+    FROM get_new_statuses_of_card({roleId}, {(int)currentStatus})
+    UNION SELECT id, sorting_order FROM Status WHERE id = {(int)currentStatus}
+    ORDER BY sorting_order ASC;";
+            var sqlCommand = new SqlCommand(sql, connection);
+
+            connection.Open();
+
+            var statusIds = new List<DataBaseStatus>();
+            using (SqlDataReader reader = sqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var statusId = (DataBaseStatus)reader.GetInt32(0);
+                    statusIds.Add(statusId);
+                }
+            }
+
+            connection.Close();
+
+            return statusIds;
         }
     }
 
@@ -63,5 +95,5 @@ namespace ClientApi
     }
 
 
-    public class ConnectionException { }
+    public class ConnectionException : Exception { }
 }

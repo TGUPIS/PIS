@@ -32,11 +32,55 @@ namespace PIS
         }
 
         public Action Return;
+        EditableCard? editableCard = null;
 
         public Card()
         {
             InitializeComponent();
         }
+
+        private void statusEditButton_Click(object sender, EventArgs e)
+        {
+            editableCard = Instance.EditCard(CardContent);
+
+            statusBox1.CurrentStatus = editableCard.CurrentCardStage;
+            statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
+            statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
+
+            statusBox1.Editable = true;
+
+            statusEditButton.Enabled = false;
+            statusSaveButton.Enabled = true;
+
+        }
+
+        private void statusSaveButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                editableCard.Save();
+            }
+            catch (InvalidConcurrentSaveException)
+            {
+                MessageBox.Show("Карточку невозможно сохранить, т.к. другой пользователь сохранил ее раньше вас.");
+                return;
+            }
+            catch (ConnectionException)
+            {
+                MessageBox.Show("Карточку невозможно сохранить, т.к. возникли проблемы с интернет соединением.");
+                return;
+            }
+
+            editableCard = null;
+            statusSaveButton.Enabled = false;
+            statusEditButton.Enabled = true;
+        }
+
+
+
+
+
+
 
         private void editButton_Click(object sender, EventArgs e)
         {
@@ -97,42 +141,36 @@ namespace PIS
             }
         }
 
-        private void nextStepButton_Click(object sender, EventArgs e)
-        {
-        }
 
         private void Card_Load(object sender, EventArgs e)
         {
-            // TODO: REMOVE THIS STATUSBOX TEST
-            {
-                var editableCard = Instance.EditCard(CardContent);
+            editButton.Enabled = true;
+            saveButton.Enabled = false;
+            statusBox1.Editable = false;
 
+            // Инициировать виджет отображения статуса
+            statusBox1.CurrentStatus = CardContent.CurrentStatus;
+            statusBox1.IsLeftButtonEnabled = statusBox1.IsRightButtonEnabled = false;
+            statusBox1.LeftButtonClick = () =>
+            {
+                if (!editableCard.IsCardSentToPreviousStage)
+                    return;
+
+                editableCard.SendCardToPreviousStage();
                 statusBox1.CurrentStatus = editableCard.CurrentCardStage;
                 statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
                 statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
-                statusBox1.LeftButtonClick = () =>
-                {
-                    if (!editableCard.IsCardSentToPreviousStage)
-                        return;
+            };
+            statusBox1.RightButtonClick = () =>
+            {
+                if (!editableCard.IsCardSentToNextStage)
+                    return;
 
-                    editableCard.SendCardToPreviousStage();
-                    statusBox1.CurrentStatus = editableCard.CurrentCardStage;
-                    statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
-                    statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
-                };
-                statusBox1.RightButtonClick = () =>
-                {
-                    if (!editableCard.IsCardSentToNextStage)
-                        return;
-
-                    editableCard.SendCardToNextStage();
-                    statusBox1.CurrentStatus = editableCard.CurrentCardStage;
-                    statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
-                    statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
-                };
-
-                statusBox1.Editable = true;
-            }            
+                editableCard.SendCardToNextStage();
+                statusBox1.CurrentStatus = editableCard.CurrentCardStage;
+                statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
+                statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
+            };
         }
     }
 }
