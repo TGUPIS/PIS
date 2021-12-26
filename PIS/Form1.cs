@@ -130,7 +130,6 @@ namespace PIS
         {
             return status switch
             {
-                Status.SubmittedForRevision => "Отправлено на доработку",
                 Status.Draft => "Черновик",
                 Status.AgreementByCatchingOrganization => "Согласование в организации по отлову",
                 Status.AgreedByCatchingOrganization => "Согласовано в организации по отлову",

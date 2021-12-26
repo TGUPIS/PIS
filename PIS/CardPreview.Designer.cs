@@ -42,24 +42,24 @@ namespace PIS
             ((System.ComponentModel.ISupportInitialize)(this.isCommentedBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // catchDateValue
+            // catchDateBox
             // 
             this.catchDateBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.catchDateBox.AutoSize = true;
             this.catchDateBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.catchDateBox.Location = new System.Drawing.Point(503, 73);
-            this.catchDateBox.Name = "catchDateValue";
+            this.catchDateBox.Location = new System.Drawing.Point(475, 73);
+            this.catchDateBox.Name = "catchDateBox";
             this.catchDateBox.Size = new System.Drawing.Size(76, 25);
             this.catchDateBox.TabIndex = 0;
             this.catchDateBox.Text = "02.2021";
             this.catchDateBox.Click += new System.EventHandler(this.CardPreview_Click);
             // 
-            // statusDateValue
+            // statusChangeDateBox
             // 
             this.statusChangeDateBox.AutoSize = true;
             this.statusChangeDateBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.statusChangeDateBox.Location = new System.Drawing.Point(12, 73);
-            this.statusChangeDateBox.Name = "statusDateValue";
+            this.statusChangeDateBox.Name = "statusChangeDateBox";
             this.statusChangeDateBox.Size = new System.Drawing.Size(100, 25);
             this.statusChangeDateBox.TabIndex = 3;
             this.statusChangeDateBox.Text = "12.02.2021";
@@ -78,7 +78,7 @@ namespace PIS
             // 
             this.areaBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.areaBox.AutoSize = true;
-            this.areaBox.Location = new System.Drawing.Point(503, 51);
+            this.areaBox.Location = new System.Drawing.Point(475, 51);
             this.areaBox.Name = "areaBox";
             this.areaBox.Size = new System.Drawing.Size(77, 25);
             this.areaBox.TabIndex = 9;
@@ -94,12 +94,12 @@ namespace PIS
             this.idLabel.TabIndex = 10;
             this.idLabel.Text = "#123";
             // 
-            // isAttachedPdfBox
+            // isPdfAttachedBox
             // 
             this.isPdfAttachedBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.isPdfAttachedBox.Image = global::PIS.Properties.Resources.pdfFile;
-            this.isPdfAttachedBox.Location = new System.Drawing.Point(521, 13);
-            this.isPdfAttachedBox.Name = "isAttachedPdfBox";
+            this.isPdfAttachedBox.Location = new System.Drawing.Point(493, 13);
+            this.isPdfAttachedBox.Name = "isPdfAttachedBox";
             this.isPdfAttachedBox.Size = new System.Drawing.Size(26, 26);
             this.isPdfAttachedBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.isPdfAttachedBox.TabIndex = 11;
@@ -110,7 +110,7 @@ namespace PIS
             // 
             this.isCommentedBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.isCommentedBox.Image = global::PIS.Properties.Resources.comment;
-            this.isCommentedBox.Location = new System.Drawing.Point(550, 14);
+            this.isCommentedBox.Location = new System.Drawing.Point(522, 14);
             this.isCommentedBox.Name = "isCommentedBox";
             this.isCommentedBox.Size = new System.Drawing.Size(24, 24);
             this.isCommentedBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -132,7 +132,7 @@ namespace PIS
             this.Controls.Add(this.statusChangeDateBox);
             this.Controls.Add(this.catchDateBox);
             this.Name = "CardPreview";
-            this.Size = new System.Drawing.Size(594, 113);
+            this.Size = new System.Drawing.Size(566, 113);
             ((System.ComponentModel.ISupportInitialize)(this.isPdfAttachedBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.isCommentedBox)).EndInit();
             this.ResumeLayout(false);

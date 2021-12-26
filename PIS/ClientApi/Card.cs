@@ -9,17 +9,15 @@ namespace ClientApi
     {
         public int CardId { get; private set; }
         public Status CurrentStatus { get; private set; }
-        internal DataBaseStatus CurrentDataBaseStatus { get; private set; }
 
         /// Это поле должно вызываться в пределах неймспейса `ClientApi`.
         internal int version;
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal CardContent(int cardId, Status currentStatus, DataBaseStatus currentDataBaseStatus, int version)
+        internal CardContent(int cardId, Status currentStatus, int version)
         {
             CardId = cardId;
             CurrentStatus = currentStatus;
-            CurrentDataBaseStatus = currentDataBaseStatus;
             this.version = version;
         }
     }
@@ -29,7 +27,7 @@ namespace ClientApi
     {
         Instance instance;
 
-        DataBaseStatus[] statuses;
+        Status[] statuses;
         int currentStatusIndex;
         int defaultStatusIndex;
 
@@ -38,7 +36,8 @@ namespace ClientApi
         public int CardId { get; private set; }
 
         /// Можно ли отправить карточку на следующую стадию?
-        public bool IsCardSentToNextStage {
+        public bool IsCardSentToNextStage
+        {
             get
             {
                 return currentStatusIndex + 1 < statuses.Length;
@@ -46,21 +45,15 @@ namespace ClientApi
         }
 
         /// Можно ли отправить карточку на предыдущую стадию?
-        public bool IsCardSentToPreviousStage {
+        public bool IsCardSentToPreviousStage
+        {
             get
             {
                 return currentStatusIndex >= 1;
             }
         }
 
-        public Status CurrentCardStage {
-            get
-            {
-                return FilterBuilder.ConvertDataBaseStatus(statuses[currentStatusIndex]);
-            }
-        }
-
-        internal DataBaseStatus CurrentDataBaseStatus
+        public Status CurrentCardStage
         {
             get
             {
@@ -69,7 +62,7 @@ namespace ClientApi
         }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal EditableCard(Instance instance, int cardId, DataBaseStatus[] statuses, int currentStatusIndex, int version)
+        internal EditableCard(Instance instance, int cardId, Status[] statuses, int currentStatusIndex, int version)
         {
             this.instance = instance;
             CardId = cardId;
@@ -80,7 +73,8 @@ namespace ClientApi
 
         /// Отправляет карточку на следующую стадию. Если `IsCardSentToNextStage == false`,
         /// бросает `InvalidOperationException`.
-        public void SendCardToNextStage() {
+        public void SendCardToNextStage()
+        {
             if (!IsCardSentToNextStage)
                 throw new InvalidOperationException();
 
@@ -88,7 +82,8 @@ namespace ClientApi
         }
 
         /// Отправляет карточку на предыдущую стадию. Если `IsCardSentToNextStage == false`, бросает `InvalidOperationException`.
-        public void SendCardToPreviousStage() {
+        public void SendCardToPreviousStage()
+        {
             if (!IsCardSentToPreviousStage)
                 throw new InvalidOperationException();
 
@@ -99,22 +94,28 @@ namespace ClientApi
         /// Если карточку невозможно сохранить из-за одновременного сохранения многими пользователями,
         /// бросает `InvalidConcurrentSaveException`.
         /// Если соединение с сервером не удалось, бросает `ConnectionException`.
-        public void Save() {
+        public void Save()
+        {
             if (currentStatusIndex == defaultStatusIndex)
                 return;
 
             var newVersion = Instance.GetCardVersion(instance.connection, CardId);
-            if(version != newVersion)
+            if (version != newVersion)
                 throw new InvalidConcurrentSaveException();
 
-            var sql = $@"
+            var sqlStatusUpdate = $@"
 INSERT INTO StatusHistory VALUES ({CardId}, CURRENT_TIMESTAMP, NULL, {(int)statuses[currentStatusIndex]});";
-            var sqlCommand = new SqlCommand(sql, instance.connection);
+            var sqlStatusUpdateCommand = new SqlCommand(sqlStatusUpdate, instance.connection);
+
+            var sqlVersionUpdate = $@"
+ UPDATE Card SET version += 1 WHERE id = {CardId};";
+            var sqlVersionUpdateCommand = new SqlCommand(sqlVersionUpdate, instance.connection);
 
             instance.connection.Open();
 
+            // Обновить статус
             var statusIds = new List<Status>();
-            using (SqlDataReader reader = sqlCommand.ExecuteReader())
+            using (SqlDataReader reader = sqlStatusUpdateCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -123,8 +124,12 @@ INSERT INTO StatusHistory VALUES ({CardId}, CURRENT_TIMESTAMP, NULL, {(int)statu
                 }
             }
 
+            // Обновить версию
+            sqlVersionUpdateCommand.ExecuteNonQuery();
+
             instance.connection.Close();
         }
+
 
         /// Отменяет изменения карточки, получив актуальные данные с сервера. Если соединение с сервером не удалось, бросает `ConnectionException`.
         public void Reset() { }
@@ -133,48 +138,18 @@ INSERT INTO StatusHistory VALUES ({CardId}, CURRENT_TIMESTAMP, NULL, {(int)statu
 
     public enum Status
     {
-        // Отправлено на доработку
-        SubmittedForRevision = 1,
         // Черновик
-        Draft = 2,
+        Draft = 1,
         // Согласование в организации по отлову
-        AgreementByCatchingOrganization = 3,
+        AgreementByCatchingOrganization = 2,
         // Согласовано в организации по отлову
-        AgreedByCatchingOrganization = 4,
+        AgreedByCatchingOrganization = 3,
         // Утверждено в организации по отлову
-        ApprovedByCatchingOrganization = 5,
+        ApprovedByCatchingOrganization = 4,
         // Согласовано в ОМСУ
-        AgreedByOmsu = 6,
+        AgreedByOmsu = 5,
         // Утверждено в ОМСУ
-        ApprovedByOmsu = 7
-    }
-
-    internal enum DataBaseStatus
-    {
-        // Отправлено на доработку: Черновик
-        SubmittedForRevisionToDraft = 1,
-        // Отправлено на доработку: Согласование в организации по отлову
-        SubmittedForRevisionToAgreementByCatchingOrganization = 2,
-        // Отправлено на доработку: Согласовано в организации по отлову
-        SubmittedForRevisionToAgreedByCatchingOrganization = 3,
-        // Отправлено на доработку: Утверждено в организации по отлову
-        SubmittedForRevisionToApprovedByCatchingOrganization = 4,
-        // Отправлено на доработку: Согласовано в ОМСУ
-        SubmittedForRevisionToAgreedByOmsu = 5,
-        // Отправлено на доработку: Утверждено в ОМСУ
-        SubmittedForRevisionToApprovedByOmsu = 6,
-        // Черновик
-        Draft = 7,
-        // Согласование в организации по отлову
-        AgreementByCatchingOrganization = 8,
-        // Согласовано в организации по отлову
-        AgreedByCatchingOrganization = 9,
-        // Утверждено в организации по отлову
-        ApprovedByCatchingOrganization = 10,
-        // Согласовано в ОМСУ
-        AgreedByOmsu = 11,
-        // Утверждено в ОМСУ
-        ApprovedByOmsu = 12
+        ApprovedByOmsu = 6
     }
 
     public class InvalidConcurrentSaveException : Exception

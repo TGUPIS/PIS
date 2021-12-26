@@ -59,10 +59,11 @@ namespace PIS
             this.cardPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cardPanel.AutoScroll = true;
             this.cardPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
             this.cardPanel.Location = new System.Drawing.Point(6, 62);
             this.cardPanel.Name = "cardPanel";
-            this.cardPanel.Size = new System.Drawing.Size(613, 795);
+            this.cardPanel.Size = new System.Drawing.Size(598, 684);
             this.cardPanel.TabIndex = 0;
             this.cardPanel.Visible = false;
             // 
@@ -77,7 +78,7 @@ namespace PIS
             this.card.Location = new System.Drawing.Point(2, 1);
             this.card.Margin = new System.Windows.Forms.Padding(4);
             this.card.Name = "card";
-            this.card.Size = new System.Drawing.Size(1045, 877);
+            this.card.Size = new System.Drawing.Size(1045, 807);
             this.card.TabIndex = 1;
             this.card.Visible = false;
             // 
@@ -238,17 +239,20 @@ namespace PIS
             this.filterPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.filterPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(243)))), ((int)(((byte)(230)))));
             this.filterPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.filterPanel1.CountOfEditableCardsWithNotifications = 0;
+            this.filterPanel1.CountOfEditableCardsWithoutNotifications = 0;
+            this.filterPanel1.CountOfOtherCards = 0;
             this.filterPanel1.Location = new System.Drawing.Point(619, 65);
             this.filterPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.filterPanel1.Name = "filterPanel1";
-            this.filterPanel1.Size = new System.Drawing.Size(412, 800);
+            this.filterPanel1.Size = new System.Drawing.Size(412, 765);
             this.filterPanel1.TabIndex = 5;
             this.filterPanel1.Visible = false;
             // 
             // paginatorPanel
             // 
             this.paginatorPanel.Controls.Add(this.paginatorBox);
-            this.paginatorPanel.Location = new System.Drawing.Point(0, 820);
+            this.paginatorPanel.Location = new System.Drawing.Point(0, 785);
             this.paginatorPanel.Name = "paginatorPanel";
             this.paginatorPanel.Size = new System.Drawing.Size(613, 55);
             this.paginatorPanel.TabIndex = 7;
@@ -268,7 +272,7 @@ namespace PIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
-            this.ClientSize = new System.Drawing.Size(1041, 877);
+            this.ClientSize = new System.Drawing.Size(1041, 842);
             this.Controls.Add(this.paginatorPanel);
             this.Controls.Add(this.profilePanel);
             this.Controls.Add(this.menuPanel);
@@ -278,7 +282,7 @@ namespace PIS
             this.Controls.Add(this.filterPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Отловный реестр";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.profileButton)).EndInit();

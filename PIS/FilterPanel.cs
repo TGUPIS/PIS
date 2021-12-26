@@ -89,7 +89,6 @@ namespace PIS
             checkBoxOfEditableCardsWithoutNotifications.Checked = filterBuilder.EditableCardsWithoutNotifications;
             checkBoxOfOtherCards.Checked = filterBuilder.OtherCards;
 
-            checkBoxOfSubmittedForRevision.Checked = filterBuilder.FilterStatuses[Status.SubmittedForRevision];
             checkBoxOfDraft.Checked = filterBuilder.FilterStatuses[Status.Draft];
             checkBoxOfAgreementByCatchingOrganization.Checked
                 = filterBuilder.FilterStatuses[Status.AgreementByCatchingOrganization];
@@ -140,7 +139,6 @@ namespace PIS
             filterBuilder.EditableCardsWithoutNotifications = checkBoxOfEditableCardsWithoutNotifications.Checked;
             filterBuilder.OtherCards = checkBoxOfOtherCards.Checked;
 
-            filterBuilder.FilterStatuses[Status.SubmittedForRevision] = checkBoxOfSubmittedForRevision.Checked;
             filterBuilder.FilterStatuses[Status.Draft] = checkBoxOfDraft.Checked;
             filterBuilder.FilterStatuses[Status.AgreementByCatchingOrganization]
                 = checkBoxOfAgreementByCatchingOrganization.Checked;

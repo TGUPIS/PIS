@@ -28,6 +28,12 @@ namespace PIS
 
                 cardContent = value;
                 cardIdValue.Text = value.CardId.ToString();
+
+                saveButton.Enabled = false;
+                editButton.Enabled = true;
+
+                // Инициировать виджет отображения статуса
+                InitStatusBox();
             }
         }
 
@@ -43,10 +49,10 @@ namespace PIS
         {
             editableCard = Instance.EditCard(CardContent);
 
+            // Настроить виджет статуса
             statusBox1.CurrentStatus = editableCard.CurrentCardStage;
             statusBox1.IsLeftButtonEnabled = editableCard.IsCardSentToPreviousStage;
             statusBox1.IsRightButtonEnabled = editableCard.IsCardSentToNextStage;
-
             statusBox1.Editable = true;
 
             statusEditButton.Enabled = false;
@@ -71,12 +77,23 @@ namespace PIS
                 return;
             }
 
+            statusBox1.Editable = false;
+
             editableCard = null;
             statusSaveButton.Enabled = false;
             statusEditButton.Enabled = true;
         }
 
+        private void returnButton_Click(object sender, EventArgs e)
+        {
+            statusBox1.Editable = false;
 
+            editableCard = null;
+            statusSaveButton.Enabled = false;
+            statusEditButton.Enabled = true;
+
+            Return();
+        }
 
 
 
@@ -118,11 +135,6 @@ namespace PIS
             catchDatePicker.Enabled = !catchDatePicker.Enabled;
         }
 
-        private void returnButton_Click(object sender, EventArgs e)
-        {
-            Return();
-        }
-
         private void exportButton_Click(object sender, EventArgs e)
         {
             Stream myStream;
@@ -144,11 +156,12 @@ namespace PIS
 
         private void Card_Load(object sender, EventArgs e)
         {
-            editButton.Enabled = true;
-            saveButton.Enabled = false;
-            statusBox1.Editable = false;
 
-            // Инициировать виджет отображения статуса
+        }
+
+        void InitStatusBox()
+        {
+            statusBox1.Editable = false;
             statusBox1.CurrentStatus = CardContent.CurrentStatus;
             statusBox1.IsLeftButtonEnabled = statusBox1.IsRightButtonEnabled = false;
             statusBox1.LeftButtonClick = () =>

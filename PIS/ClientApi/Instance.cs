@@ -35,7 +35,7 @@ namespace ClientApi
         {
 
             var version = GetCardVersion(connection, cardCover.CardId);
-            return new CardContent(cardCover.CardId, cardCover.CurrentStatus, cardCover.CurrentDataBaseStatus, version);
+            return new CardContent(cardCover.CardId, cardCover.CurrentStatus, version);
         }
 
         /// Этот метод должен вызываться в пределах неймспейса `ClientApi`.
@@ -56,13 +56,13 @@ SELECT version
 
         public EditableCard EditCard(CardContent cardContent)
         {
-            var statusIds = GetEditStatuses(cardContent.CurrentDataBaseStatus);
-            var currentStatusIndex = statusIds.IndexOf(cardContent.CurrentDataBaseStatus);
+            var statusIds = GetEditStatuses(cardContent.CurrentStatus);
+            var currentStatusIndex = statusIds.IndexOf(cardContent.CurrentStatus);
             return new EditableCard(this, cardContent.CardId, statusIds.ToArray(),
                 currentStatusIndex, cardContent.version);
         }
 
-        List<DataBaseStatus> GetEditStatuses(DataBaseStatus currentStatus)
+        List<Status> GetEditStatuses(Status currentStatus)
         {
             var sql = $@"
 SELECT new_status_id, sorting_order
@@ -73,12 +73,12 @@ SELECT new_status_id, sorting_order
 
             connection.Open();
 
-            var statusIds = new List<DataBaseStatus>();
+            var statusIds = new List<Status>();
             using (SqlDataReader reader = sqlCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    var statusId = (DataBaseStatus)reader.GetInt32(0);
+                    var statusId = (Status)reader.GetInt32(0);
                     statusIds.Add(statusId);
                 }
             }

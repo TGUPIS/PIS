@@ -335,7 +335,7 @@ namespace PIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(247)))), ((int)(((byte)(238)))));
-            this.Controls.Add(this.statusBox1);
+            this.Controls.Add(this.statusBox);
             this.Controls.Add(this.areaReadBox);
             this.Controls.Add(this.areaEditBox);
             this.Controls.Add(this.pdfOpenButton);
@@ -352,7 +352,7 @@ namespace PIS
             this.Controls.Add(this.pdfLoadButton);
             this.Controls.Add(this.statusSaveButton);
             this.Controls.Add(this.statusEditButton);
-            this.Controls.Add(this.statusBox);
+            this.Controls.Add(this.statusBox1);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.areaLabel);
             this.Name = "Card";

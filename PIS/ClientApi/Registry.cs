@@ -53,7 +53,7 @@ namespace ClientApi
             var cardCoverCount = (int)pageCountCommand.ExecuteScalar();
             instance.connection.Close();
 
-            return cardCoverCount / pageLength + cardCoverCount % pageLength != 0 ? 1 : 0;
+            return cardCoverCount / pageLength + (cardCoverCount % pageLength != 0 ? 1 : 0);
         }
 
         int GetNotificationCount(NotificationType notificationType)
@@ -114,12 +114,9 @@ FETCH NEXT {pageLength} ROWS ONLY"
                 {
                     while (reader.Read())
                     {
-                        var dataBaseStatus = (DataBaseStatus)reader.GetInt32(1);
-
                         var cardCover = new CardCover(
                             reader.GetInt32(0),
-                            FilterBuilder.ConvertDataBaseStatus(dataBaseStatus),
-                            dataBaseStatus,
+                            (Status)reader.GetInt32(1),
                             reader.GetDateTime(2),
                             reader.GetString(3),
                             reader.GetDateTime(4),
@@ -213,9 +210,8 @@ FETCH NEXT {pageLength} ROWS ONLY"
         {
             var statuses = String.Join(" OR ",
                 filterStatuses.statuses
-                .Select((x, i) => (x, (Status)(i + 1))).Where(t => t.x)
-                .Select(t => ConvertStatus(t.Item2, instance.roleId)).Where(t => t.HasValue)
-                .Select(t => $"x.status_id = {(int)t.Value}"));
+                .Select((x, i) => (x, i + 1)).Where(t => t.x)
+                .Select(t => $"x.status_id = {t.Item2}"));
             var rangeStart = CardIdRangeStart.HasValue ? $"x.card_id >= {CardIdRangeStart.Value}" : "";
             var rangeEnd = CardIdRangeEnd.HasValue ? $"x.card_id <= {CardIdRangeEnd.Value}" : "";
             var isPdfAttached = IsPdfAttached ? @"pdf IS NOT NULL" : "";
@@ -251,49 +247,6 @@ FETCH NEXT {pageLength} ROWS ONLY"
                 sql = $"WHERE {sql}";
 
             return new Filter(sql);
-        }
-
-        internal static DataBaseStatus? ConvertStatus(Status status, int roleId)
-        {
-            return status switch
-            {
-                Status.SubmittedForRevision => roleId switch
-                {
-                    1 => DataBaseStatus.SubmittedForRevisionToDraft,
-                    2 => DataBaseStatus.SubmittedForRevisionToAgreementByCatchingOrganization,
-                    3 => DataBaseStatus.SubmittedForRevisionToAgreedByCatchingOrganization,
-                    4 => DataBaseStatus.SubmittedForRevisionToApprovedByCatchingOrganization,
-                    5 => DataBaseStatus.SubmittedForRevisionToAgreedByOmsu,
-                    _ => null
-                },
-                Status.Draft => DataBaseStatus.Draft,
-                Status.AgreementByCatchingOrganization => DataBaseStatus.AgreementByCatchingOrganization,
-                Status.AgreedByCatchingOrganization => DataBaseStatus.AgreedByCatchingOrganization,
-                Status.ApprovedByCatchingOrganization => DataBaseStatus.ApprovedByCatchingOrganization,
-                Status.AgreedByOmsu => DataBaseStatus.AgreedByOmsu,
-                Status.ApprovedByOmsu => DataBaseStatus.ApprovedByOmsu,
-                _ => null
-            };
-        }
-
-        internal static Status ConvertDataBaseStatus(DataBaseStatus status)
-        {
-            return status switch
-            {
-                DataBaseStatus.SubmittedForRevisionToDraft => Status.Draft,
-                DataBaseStatus.SubmittedForRevisionToAgreementByCatchingOrganization => Status.Draft,
-                DataBaseStatus.SubmittedForRevisionToAgreedByCatchingOrganization => Status.Draft,
-                DataBaseStatus.SubmittedForRevisionToApprovedByCatchingOrganization => Status.Draft,
-                DataBaseStatus.SubmittedForRevisionToAgreedByOmsu => Status.Draft,
-                DataBaseStatus.SubmittedForRevisionToApprovedByOmsu => Status.Draft,
-                DataBaseStatus.Draft => Status.Draft,
-                DataBaseStatus.AgreementByCatchingOrganization => Status.AgreementByCatchingOrganization,
-                DataBaseStatus.AgreedByCatchingOrganization => Status.AgreedByCatchingOrganization,
-                DataBaseStatus.ApprovedByCatchingOrganization => Status.ApprovedByCatchingOrganization,
-                DataBaseStatus.AgreedByOmsu => Status.AgreedByOmsu,
-                DataBaseStatus.ApprovedByOmsu => Status.ApprovedByOmsu,
-                _ => throw new Exception()
-            };
         }
     }
 
@@ -440,7 +393,6 @@ FETCH NEXT {pageLength} ROWS ONLY"
 
         public int CardId { get; private set; }
         public Status CurrentStatus { get; private set; }
-        internal DataBaseStatus CurrentDataBaseStatus { get; set; }
         public DateTime StatusChangeDate { get; private set; }
         public string CatchLocality { get; private set; }
         public DateTime CatchDate { get; private set; }
@@ -448,14 +400,13 @@ FETCH NEXT {pageLength} ROWS ONLY"
         public bool IsCommented { get; private set; }
 
         /// Этот конструктор должен вызываться в пределах неймспейса `ClientApi`.
-        internal CardCover(int cardId, Status currentStatus, DataBaseStatus currentDataBaseStatus,
-            DateTime statusChangeDate, string catchLocality, DateTime catchDate,
+        internal CardCover(int cardId, Status currentStatus, DateTime statusChangeDate,
+            string catchLocality, DateTime catchDate,
             bool isPdfAttached, bool isCommented)
         {
             CardId = cardId;
             CurrentStatus = currentStatus;
             StatusChangeDate = statusChangeDate;
-            CurrentDataBaseStatus = currentDataBaseStatus;
             CatchLocality = catchLocality;
             CatchDate = catchDate;
             IsPdfAttached = isPdfAttached;

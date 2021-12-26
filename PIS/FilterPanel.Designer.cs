@@ -40,7 +40,6 @@ namespace PIS
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.checkBoxOfSubmittedForRevision = new System.Windows.Forms.CheckBox();
             this.checkBoxOfDraft = new System.Windows.Forms.CheckBox();
             this.checkBoxOfAgreementByCatchingOrganization = new System.Windows.Forms.CheckBox();
             this.checkBoxOfApprovedByOmsu = new System.Windows.Forms.CheckBox();
@@ -94,7 +93,7 @@ namespace PIS
             // checkBoxOfAttachedPdf
             // 
             this.checkBoxOfAttachedPdf.AutoSize = true;
-            this.checkBoxOfAttachedPdf.Location = new System.Drawing.Point(23, 692);
+            this.checkBoxOfAttachedPdf.Location = new System.Drawing.Point(23, 658);
             this.checkBoxOfAttachedPdf.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfAttachedPdf.Name = "checkBoxOfAttachedPdf";
             this.checkBoxOfAttachedPdf.Size = new System.Drawing.Size(115, 29);
@@ -105,7 +104,7 @@ namespace PIS
             // checkBoxOfCommented
             // 
             this.checkBoxOfCommented.AutoSize = true;
-            this.checkBoxOfCommented.Location = new System.Drawing.Point(23, 659);
+            this.checkBoxOfCommented.Location = new System.Drawing.Point(23, 625);
             this.checkBoxOfCommented.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfCommented.Name = "checkBoxOfCommented";
             this.checkBoxOfCommented.Size = new System.Drawing.Size(151, 29);
@@ -115,7 +114,7 @@ namespace PIS
             // 
             // CardIdRangeEnd
             // 
-            this.CardIdRangeEnd.Location = new System.Drawing.Point(225, 582);
+            this.CardIdRangeEnd.Location = new System.Drawing.Point(225, 548);
             this.CardIdRangeEnd.Margin = new System.Windows.Forms.Padding(2);
             this.CardIdRangeEnd.Name = "CardIdRangeEnd";
             this.CardIdRangeEnd.PlaceholderText = "До";
@@ -127,7 +126,7 @@ namespace PIS
             // 
             this.dashLabelOfCardNumberRange.AutoSize = true;
             this.dashLabelOfCardNumberRange.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.dashLabelOfCardNumberRange.Location = new System.Drawing.Point(194, 582);
+            this.dashLabelOfCardNumberRange.Location = new System.Drawing.Point(194, 548);
             this.dashLabelOfCardNumberRange.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.dashLabelOfCardNumberRange.Name = "dashLabelOfCardNumberRange";
             this.dashLabelOfCardNumberRange.Size = new System.Drawing.Size(30, 25);
@@ -138,7 +137,7 @@ namespace PIS
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.857143F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(17, 548);
+            this.label3.Location = new System.Drawing.Point(17, 514);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(195, 28);
@@ -149,7 +148,7 @@ namespace PIS
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.857143F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(17, 630);
+            this.label4.Location = new System.Drawing.Point(17, 596);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(95, 28);
@@ -178,21 +177,10 @@ namespace PIS
             this.label2.TabIndex = 12;
             this.label2.Text = "Последний статус";
             // 
-            // checkBoxOfSubmittedForRevision
-            // 
-            this.checkBoxOfSubmittedForRevision.AutoSize = true;
-            this.checkBoxOfSubmittedForRevision.Location = new System.Drawing.Point(23, 300);
-            this.checkBoxOfSubmittedForRevision.Margin = new System.Windows.Forms.Padding(2);
-            this.checkBoxOfSubmittedForRevision.Name = "checkBoxOfSubmittedForRevision";
-            this.checkBoxOfSubmittedForRevision.Size = new System.Drawing.Size(254, 29);
-            this.checkBoxOfSubmittedForRevision.TabIndex = 13;
-            this.checkBoxOfSubmittedForRevision.Text = "Отправлено на доработку";
-            this.checkBoxOfSubmittedForRevision.UseVisualStyleBackColor = true;
-            // 
             // checkBoxOfDraft
             // 
             this.checkBoxOfDraft.AutoSize = true;
-            this.checkBoxOfDraft.Location = new System.Drawing.Point(23, 334);
+            this.checkBoxOfDraft.Location = new System.Drawing.Point(23, 300);
             this.checkBoxOfDraft.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfDraft.Name = "checkBoxOfDraft";
             this.checkBoxOfDraft.Size = new System.Drawing.Size(120, 29);
@@ -203,7 +191,7 @@ namespace PIS
             // checkBoxOfAgreementByCatchingOrganization
             // 
             this.checkBoxOfAgreementByCatchingOrganization.AutoSize = true;
-            this.checkBoxOfAgreementByCatchingOrganization.Location = new System.Drawing.Point(23, 367);
+            this.checkBoxOfAgreementByCatchingOrganization.Location = new System.Drawing.Point(23, 333);
             this.checkBoxOfAgreementByCatchingOrganization.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfAgreementByCatchingOrganization.Name = "checkBoxOfAgreementByCatchingOrganization";
             this.checkBoxOfAgreementByCatchingOrganization.Size = new System.Drawing.Size(366, 29);
@@ -214,7 +202,7 @@ namespace PIS
             // checkBoxOfApprovedByOmsu
             // 
             this.checkBoxOfApprovedByOmsu.AutoSize = true;
-            this.checkBoxOfApprovedByOmsu.Location = new System.Drawing.Point(23, 500);
+            this.checkBoxOfApprovedByOmsu.Location = new System.Drawing.Point(23, 466);
             this.checkBoxOfApprovedByOmsu.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfApprovedByOmsu.Name = "checkBoxOfApprovedByOmsu";
             this.checkBoxOfApprovedByOmsu.Size = new System.Drawing.Size(209, 29);
@@ -225,7 +213,7 @@ namespace PIS
             // checkBoxOfAgreedByOmsu
             // 
             this.checkBoxOfAgreedByOmsu.AutoSize = true;
-            this.checkBoxOfAgreedByOmsu.Location = new System.Drawing.Point(23, 467);
+            this.checkBoxOfAgreedByOmsu.Location = new System.Drawing.Point(23, 433);
             this.checkBoxOfAgreedByOmsu.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfAgreedByOmsu.Name = "checkBoxOfAgreedByOmsu";
             this.checkBoxOfAgreedByOmsu.Size = new System.Drawing.Size(215, 29);
@@ -236,7 +224,7 @@ namespace PIS
             // checkBoxOfApprovedByCatchingOrganization
             // 
             this.checkBoxOfApprovedByCatchingOrganization.AutoSize = true;
-            this.checkBoxOfApprovedByCatchingOrganization.Location = new System.Drawing.Point(23, 434);
+            this.checkBoxOfApprovedByCatchingOrganization.Location = new System.Drawing.Point(23, 400);
             this.checkBoxOfApprovedByCatchingOrganization.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfApprovedByCatchingOrganization.Name = "checkBoxOfApprovedByCatchingOrganization";
             this.checkBoxOfApprovedByCatchingOrganization.Size = new System.Drawing.Size(352, 29);
@@ -247,7 +235,7 @@ namespace PIS
             // checkBoxOfAgreedByCatchingOrganization
             // 
             this.checkBoxOfAgreedByCatchingOrganization.AutoSize = true;
-            this.checkBoxOfAgreedByCatchingOrganization.Location = new System.Drawing.Point(23, 400);
+            this.checkBoxOfAgreedByCatchingOrganization.Location = new System.Drawing.Point(23, 366);
             this.checkBoxOfAgreedByCatchingOrganization.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxOfAgreedByCatchingOrganization.Name = "checkBoxOfAgreedByCatchingOrganization";
             this.checkBoxOfAgreedByCatchingOrganization.Size = new System.Drawing.Size(358, 29);
@@ -291,7 +279,7 @@ namespace PIS
             // resetButton
             // 
             this.resetButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
-            this.resetButton.Location = new System.Drawing.Point(17, 746);
+            this.resetButton.Location = new System.Drawing.Point(17, 712);
             this.resetButton.Margin = new System.Windows.Forms.Padding(2);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(178, 33);
@@ -303,7 +291,7 @@ namespace PIS
             // applyButton
             // 
             this.applyButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(222)))), ((int)(((byte)(186)))));
-            this.applyButton.Location = new System.Drawing.Point(215, 746);
+            this.applyButton.Location = new System.Drawing.Point(215, 712);
             this.applyButton.Margin = new System.Windows.Forms.Padding(2);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(178, 33);
@@ -314,7 +302,7 @@ namespace PIS
             // 
             // CardIdRangeStart
             // 
-            this.CardIdRangeStart.Location = new System.Drawing.Point(23, 582);
+            this.CardIdRangeStart.Location = new System.Drawing.Point(23, 548);
             this.CardIdRangeStart.Margin = new System.Windows.Forms.Padding(2);
             this.CardIdRangeStart.Name = "CardIdRangeStart";
             this.CardIdRangeStart.PlaceholderText = "От";
@@ -383,7 +371,6 @@ namespace PIS
             this.Controls.Add(this.checkBoxOfApprovedByOmsu);
             this.Controls.Add(this.checkBoxOfAgreementByCatchingOrganization);
             this.Controls.Add(this.checkBoxOfDraft);
-            this.Controls.Add(this.checkBoxOfSubmittedForRevision);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label4);
@@ -395,7 +382,7 @@ namespace PIS
             this.Controls.Add(this.checkBoxOfAttachedPdf);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FilterPanel";
-            this.Size = new System.Drawing.Size(413, 800);
+            this.Size = new System.Drawing.Size(413, 765);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -414,7 +401,6 @@ namespace PIS
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox checkBoxOfSubmittedForRevision;
         private System.Windows.Forms.CheckBox checkBoxOfDraft;
         private System.Windows.Forms.CheckBox checkBoxOfAgreementByCatchingOrganization;
         private System.Windows.Forms.CheckBox checkBoxOfApprovedByOmsu;
